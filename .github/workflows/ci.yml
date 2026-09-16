@@ -1,0 +1,82 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: vibe_english
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      # CI uses a throwaway local Postgres, never Neon. These are not secrets.
+      MIGRATION_DATABASE_URL: postgres://postgres:postgres@localhost:5432/vibe_english?sslmode=disable
+      APP_DATABASE_URL: postgres://app:app@localhost:5432/vibe_english?sslmode=disable
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/vibe_english?sslmode=disable
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install golang-migrate
+        run: |
+          curl -fsSL https://github.com/golang-migrate/migrate/releases/download/v4.18.1/migrate.linux-amd64.tar.gz \
+            | tar xz migrate
+          sudo mv migrate /usr/local/bin/migrate
+          migrate -version
+
+      - name: Create application role
+        # The app role must not be able to bypass RLS — that is what the
+        # rls tests assert against.
+        run: |
+          PGPASSWORD=postgres psql -h localhost -U postgres -d vibe_english \
+            -v ON_ERROR_STOP=1 \
+            -c "CREATE ROLE app LOGIN PASSWORD 'app' NOBYPASSRLS;"
+
+      - name: Run migrations
+        run: migrate -path db/migrations -database "$MIGRATION_DATABASE_URL" up
+
+      - name: Generate Kysely types
+        run: npm run db:codegen
+
+      - name: Fail if generated types are stale
+        run: git diff --exit-code -- packages/db/src/generated.ts
+
+      - name: Seed lesson content
+        run: npm run db:seed
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build

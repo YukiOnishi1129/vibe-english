@@ -1,0 +1,74 @@
+name: Deploy
+
+# Migrates Neon production, then deploys the Worker (API + React assets).
+# Runs only when the Cloudflare credentials are configured as GitHub Secrets;
+# without them the job exits early rather than failing every push to main.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check deployment credentials
+        id: guard
+        run: |
+          if [ -n "${{ secrets.CLOUDFLARE_API_TOKEN }}" ] && [ -n "${{ secrets.DATABASE_URL }}" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Deployment secrets are not configured; skipping."
+          fi
+
+      - uses: actions/setup-node@v4
+        if: steps.guard.outputs.ready == 'true'
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        if: steps.guard.outputs.ready == 'true'
+        run: npm ci
+
+      - name: Install golang-migrate
+        if: steps.guard.outputs.ready == 'true'
+        run: |
+          curl -fsSL https://github.com/golang-migrate/migrate/releases/download/v4.18.1/migrate.linux-amd64.tar.gz \
+            | tar xz migrate
+          sudo mv migrate /usr/local/bin/migrate
+
+      - name: Migrate Neon production
+        if: steps.guard.outputs.ready == 'true'
+        # Idempotent: already-applied migrations are no-ops.
+        env:
+          MIGRATION_DATABASE_URL: ${{ secrets.MIGRATION_DATABASE_URL || secrets.DATABASE_URL }}
+        run: migrate -path db/migrations -database "$MIGRATION_DATABASE_URL" up
+
+      - name: Seed lesson content
+        if: steps.guard.outputs.ready == 'true'
+        env:
+          MIGRATION_DATABASE_URL: ${{ secrets.MIGRATION_DATABASE_URL || secrets.DATABASE_URL }}
+        run: npm run db:seed
+
+      - name: Build
+        if: steps.guard.outputs.ready == 'true'
+        run: npm run build
+
+      - name: Deploy to Cloudflare Workers
+        if: steps.guard.outputs.ready == 'true'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: apps/api
+          command: deploy

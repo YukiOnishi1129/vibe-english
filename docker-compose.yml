@@ -1,0 +1,23 @@
+# Local Postgres for development. Production uses Neon; this mirrors it closely
+# enough for migrations, seeding, the app, and the RLS tests.
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: vibe_english
+    ports:
+      - "5432:5432"
+    volumes:
+      - vibe-pg-data:/var/lib/postgresql/data
+      # Creates the non-owner `app` role that the Worker connects as.
+      - ./db/init/01_app_role.sql:/docker-entrypoint-initdb.d/01_app_role.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  vibe-pg-data:

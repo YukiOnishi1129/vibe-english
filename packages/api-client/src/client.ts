@@ -1,0 +1,82 @@
+import type { Chunk, ChunkProgress, Me } from "@vibe-english/domain";
+
+export class ApiError extends Error {
+  constructor(
+    readonly status: number,
+    message: string,
+  ) {
+    super(message);
+    this.name = "ApiError";
+  }
+
+  get isUnauthorized() {
+    return this.status === 401;
+  }
+}
+
+export type ApiClientOptions = {
+  /**
+   * Prefix for API routes. Web leaves this empty so requests are same-origin
+   * relative paths; a future mobile app passes the deployed origin.
+   */
+  baseUrl?: string;
+  fetch?: typeof globalThis.fetch;
+};
+
+export function createApiClient(options: ApiClientOptions = {}) {
+  const baseUrl = options.baseUrl?.replace(/\/$/, "") ?? "";
+  const doFetch = options.fetch ?? globalThis.fetch.bind(globalThis);
+
+  async function request<T>(path: string, init?: RequestInit): Promise<T> {
+    const response = await doFetch(`${baseUrl}${path}`, {
+      ...init,
+      // Session lives in an httpOnly cookie; it must ride along.
+      credentials: "include",
+      headers: { Accept: "application/json", ...init?.headers },
+    });
+
+    if (!response.ok) {
+      const message = await response
+        .json()
+        .then((body: { error?: string }) => body.error ?? response.statusText)
+        .catch(() => response.statusText);
+      throw new ApiError(response.status, message);
+    }
+
+    if (response.status === 204) return undefined as T;
+    return (await response.json()) as T;
+  }
+
+  return {
+    getMe: () => request<Me>("/api/me"),
+
+    getTodayChunks: () =>
+      request<{ chunks: Chunk[] }>("/api/chunks/today").then((r) => r.chunks),
+
+    getChunk: (id: string) =>
+      request<Chunk>(`/api/chunks/${encodeURIComponent(id)}`),
+
+    completeChunk: (id: string) =>
+      request<{ progress: ChunkProgress }>(
+        `/api/chunks/${encodeURIComponent(id)}/complete`,
+        { method: "POST" },
+      ).then((r) => r.progress),
+
+    setHardFlag: (id: string, hard: boolean) =>
+      request<{ isHard: boolean }>(
+        `/api/chunks/${encodeURIComponent(id)}/flags/hard`,
+        { method: hard ? "POST" : "DELETE" },
+      ).then((r) => r.isHard),
+
+    getHardChunks: () =>
+      request<{ chunks: Chunk[] }>("/api/flags/hard").then((r) => r.chunks),
+
+    /** Full-page redirect into Better Auth's Google flow. */
+    googleSignInUrl: (callbackPath = "/") =>
+      `${baseUrl}/api/auth/sign-in/social?provider=google&callbackURL=${encodeURIComponent(callbackPath)}`,
+
+    signOut: () => request<unknown>("/api/auth/sign-out", { method: "POST" }),
+  };
+}
+
+export type ApiClient = ReturnType<typeof createApiClient>;

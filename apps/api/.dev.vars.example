@@ -1,0 +1,16 @@
+# Copy to apps/api/.dev.vars for `npm run dev:api`.
+# NEVER commit the real file — this repository is public.
+# In production these are Worker secrets (`wrangler secret put <NAME>`).
+
+DATABASE_URL="postgres://app:app@localhost:5432/vibe_english?sslmode=disable"
+
+# openssl rand -base64 32
+BETTER_AUTH_SECRET="replace-me-with-a-random-32-byte-secret"
+
+# Origin the browser uses. Local dev is the Vite dev server, which proxies /api.
+BETTER_AUTH_URL="http://localhost:5173"
+
+# Google OAuth. Authorized redirect URI:
+#   ${BETTER_AUTH_URL}/api/auth/callback/google
+GOOGLE_CLIENT_ID="replace-me.apps.googleusercontent.com"
+GOOGLE_CLIENT_SECRET="replace-me"

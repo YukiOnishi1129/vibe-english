@@ -1,0 +1,32 @@
+{
+  "name": "vibe-english",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:web": "npm run dev --workspace @vibe-english/web",
+    "dev:api": "npm run dev --workspace @vibe-english/api",
+    "build": "npm run build --workspace @vibe-english/web && npm run build --workspace @vibe-english/api",
+    "typecheck": "tsc --build --force",
+    "test": "vitest run",
+    "deploy": "npm run build && npm run deploy --workspace @vibe-english/api",
+    "db:migrate": "migrate -path db/migrations -database \"$DATABASE_URL\" up",
+    "db:rollback": "migrate -path db/migrations -database \"$DATABASE_URL\" down 1",
+    "db:codegen": "kysely-codegen --out-file packages/db/src/generated.ts",
+    "db:sync": "npm run db:migrate && npm run db:codegen",
+    "db:seed": "tsx scripts/seed.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.3",
+    "dotenv": "^17.2.1",
+    "kysely-codegen": "^0.18.5",
+    "pg": "^8.16.3",
+    "@types/pg": "^8.15.5",
+    "tsx": "^4.20.3",
+    "typescript": "^5.9.2",
+    "vitest": "^4.1.11"
+  }
+}

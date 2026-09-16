@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["ES2023"],
+    "types": ["node"],
+    "outDir": "./dist-types/tools",
+    "tsBuildInfoFile": "./dist-types/tools/.tsbuildinfo"
+  },
+  "include": ["scripts", "tests", "apps/web/vite.config.ts"],
+  "references": [
+    { "path": "./packages/content" },
+    { "path": "./packages/db" },
+    { "path": "./packages/domain" }
+  ]
+}

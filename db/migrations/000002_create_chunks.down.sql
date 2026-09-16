@@ -1,0 +1,3 @@
+DROP TABLE IF EXISTS chunk_drills;
+DROP TABLE IF EXISTS chunk_examples;
+DROP TABLE IF EXISTS chunks;
