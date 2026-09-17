@@ -24,7 +24,10 @@ export function useSpeech() {
 
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = "en-US";
-      utterance.rate = rate;
+      // Some voices clamp or ignore extreme values; keep it inside the range
+      // browsers reliably honour.
+      utterance.rate = Math.min(2, Math.max(0.5, rate));
+      utterance.pitch = 1;
       utterance.onend = () => setSpeaking(false);
       utterance.onerror = () => setSpeaking(false);
 

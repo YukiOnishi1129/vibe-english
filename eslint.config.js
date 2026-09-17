@@ -147,7 +147,14 @@ export default tseslint.config(
 
   // Scripts and tests run in Node.
   {
-    files: ["scripts/**/*.ts", "tests/**/*.ts", "**/*.config.ts"],
+    files: [
+      "scripts/**/*.{ts,mjs}",
+      "tests/**/*.ts",
+      "**/*.config.{ts,js}",
+    ],
+    languageOptions: {
+      globals: { console: "readonly", process: "readonly" },
+    },
     rules: { "no-restricted-imports": "off" },
   },
 );

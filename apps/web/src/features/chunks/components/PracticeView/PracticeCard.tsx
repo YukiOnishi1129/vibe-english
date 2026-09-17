@@ -199,7 +199,7 @@ export function PracticeCard({
         <button
           type="button"
           className="button button--primary"
-          onClick={() => onSpeak(card.text, slow ? 0.75 : 1)}
+          onClick={() => onSpeak(card.text, slow ? 0.55 : 1)}
         >
           {slow ? "🐢 ゆっくり聞く" : "🔊 聞く"}
         </button>
@@ -211,7 +211,7 @@ export function PracticeCard({
   if (card.kind === "meaning") {
     return (
       <div className="pcard__body">
-        <p className="pcard__kicker">意味を思い出せる？</p>
+        <p className="pcard__kicker">どんな意味だと思う？</p>
         <p className="pcard__phrase">{card.front}</p>
         {flipped ? (
           <p className="pcard__reveal">{card.back}</p>
@@ -221,7 +221,7 @@ export function PracticeCard({
             className="button button--ghost"
             onClick={() => setFlipped(true)}
           >
-            めくる
+            答え合わせ
           </button>
         )}
       </div>

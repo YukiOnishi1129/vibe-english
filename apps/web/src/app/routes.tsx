@@ -4,6 +4,7 @@ import { LoginView } from "@/features/auth/components/LoginView";
 import { TodayView } from "@/features/chunks/components/TodayView";
 import { PracticeView } from "@/features/chunks/components/PracticeView";
 import { ReviewView } from "@/features/chunks/components/ReviewView";
+import { QuizView } from "@/features/chunks/components/QuizView";
 import { AppShell } from "@/shared/components/AppShell";
 
 /** Routing only — no data fetching lives here. */
@@ -33,6 +34,7 @@ export function AppRoutes() {
         <Route path="/" element={<TodayView />} />
         <Route path="/practice/:chunkId" element={<PracticeView />} />
         <Route path="/review" element={<ReviewView />} />
+        <Route path="/quiz" element={<QuizView />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AppShell>

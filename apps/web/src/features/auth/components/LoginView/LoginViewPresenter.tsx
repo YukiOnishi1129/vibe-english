@@ -14,15 +14,19 @@ export function LoginViewPresenter({
   return (
     <main className="screen screen--center">
       <div className="login">
-        <p className="login__badge">Vibe English</p>
-        <h1 className="login__title">
-          英語を、勉強じゃなく
-          <br />
-          毎日のノリに。
-        </h1>
-        <p className="muted login__lead">
-          短いフレーズを、聞いて・まねて・書いて。1日3分から。
-        </p>
+        <div className="login__hero">
+          <p className="login__badge">Vibe English</p>
+          <h1 className="login__title">
+            英語を、勉強じゃなく
+            <br />
+            毎日のノリに。
+          </h1>
+        </div>
+
+        <div className="login__panel">
+          <p className="login__lead">
+            短いフレーズを、聞いて・まねて・書いて。1日3分から。
+          </p>
 
         <button
           type="button"
@@ -39,7 +43,10 @@ export function LoginViewPresenter({
           </p>
         )}
 
-        <p className="login__note">ログインすると練習の記録が保存されます。</p>
+          <p className="login__note">
+            ログインすると練習の記録が保存されます。
+          </p>
+        </div>
       </div>
     </main>
   );

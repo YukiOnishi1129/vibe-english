@@ -39,6 +39,25 @@ export function useFinishChunk(chunkId: string) {
   });
 }
 
+/**
+ * Sends the wrap-up quiz outcome: every missed phrase goes back into review.
+ * Correct ones are left untouched so they retire on their own.
+ */
+export function useRecordQuizMisses() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (chunkIds: string[]) => {
+      await Promise.all(
+        chunkIds.map((id) => finishChunkRequest(id, "struggled")),
+      );
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: chunkKeys.all() });
+    },
+  });
+}
+
 export function useChunkDetail(chunkId: string | undefined) {
   return useQuery({
     ...chunkDetailQuery(chunkId ?? ""),

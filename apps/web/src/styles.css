@@ -44,6 +44,12 @@
   --hover-surface: #f0f1f3;
   --hover-line: #212121;
 
+  /* Foreground for text and outlines sitting ON a brand colour fill. These
+     stay constant across themes: a yellow panel is bright in both. */
+  --on-brand: #212121;
+  --on-brand-muted: #6b5600;
+  --on-accent: #ffffff;
+
   /* Rounded gothic for headings and buttons; body stays on Noto Sans JP so
      longer Japanese copy keeps its readability. */
   --font-display:
@@ -192,41 +198,58 @@ body {
   color: var(--text);
 }
 
-/* --- login ---------------------------------------------------------- */
+/* --- login ----------------------------------------------------------- */
+/* Follows the brand's own rule: yellow is a hero band across the top, not a
+   filled card. The panel below it stays on the neutral surface. */
 .login {
-  text-align: center;
-  padding: 2rem 1.5rem;
-  background: var(--yellow);
-  border: 3px solid #212121;
+  width: 100%;
+  max-width: 26rem;
   border-radius: 1.5rem;
-  box-shadow: 0 8px 0 #212121;
-  color: #212121;
+  overflow: hidden;
+  background: var(--surface);
+  border: 2px solid var(--border);
+}
+
+.login__hero {
+  background: var(--yellow);
+  color: var(--on-brand);
+  padding: 2.25rem 1.5rem 2rem;
+  text-align: center;
 }
 
 .login__badge {
   margin: 0;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #212121;
+  color: var(--on-brand-muted);
 }
 
 .login__title {
-  margin: 0.5rem 0 0.75rem;
-  font-size: 1.75rem;
-  line-height: 1.4;
+  margin: 0.5rem 0 0;
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 800;
+  line-height: 1.45;
+  color: var(--on-brand);
+}
+
+.login__panel {
+  padding: 1.75rem 1.5rem 1.5rem;
+  text-align: center;
 }
 
 .login__lead {
-  margin-bottom: 1.75rem;
-  color: #3d3d3d;
+  margin: 0 0 1.5rem;
+  color: var(--muted);
+  font-size: 0.92rem;
 }
 
 .login__note {
-  margin-top: 1.25rem;
-  font-size: 0.8rem;
-  color: #3d3d3d;
+  margin: 1rem 0 0;
+  font-size: 0.78rem;
+  color: var(--muted);
 }
 
 /* --- buttons -------------------------------------------------------- */
@@ -280,9 +303,9 @@ body {
 /* The playful one: yellow fill, black border and a black drop. */
 .button--pop {
   background: var(--yellow);
-  color: #212121;
-  border-color: #212121;
-  box-shadow: 0 6px 0 #212121;
+  color: var(--on-brand);
+  border-color: var(--on-brand);
+  box-shadow: 0 6px 0 var(--on-brand);
 }
 
 .button--pop:active:not(:disabled) {
@@ -310,8 +333,8 @@ body {
 
 .chip--on {
   background: var(--yellow);
-  border-color: #212121;
-  color: #212121;
+  border-color: var(--on-brand);
+  color: var(--on-brand);
 }
 
 /* --- card list ------------------------------------------------------ */
@@ -608,12 +631,12 @@ body {
   font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.08em;
-  color: #212121;
+  color: var(--on-brand);
   background: var(--yellow);
   display: inline-block;
   padding: 0.25rem 0.7rem;
   border-radius: var(--radius-pill);
-  border: 2px solid #212121;
+  border: 2px solid var(--on-brand);
 }
 
 .shell__tagline {
@@ -848,7 +871,7 @@ body {
   margin-bottom: 1rem;
   border-radius: var(--radius-card);
   background: var(--blue);
-  color: #fff;
+  color: var(--on-accent);
   box-shadow: 0 5px 0 var(--blue-deep);
 }
 
@@ -927,13 +950,22 @@ body {
   position: relative;
 }
 
+/* A fixed-width lane keeps every node on the same centre line, even though
+   the current one is larger than the rest. */
+.path__lane {
+  flex: none;
+  width: 6rem;
+  display: grid;
+  place-items: center;
+}
+
 /* The connecting line between nodes. */
 .path__step:not(:last-child)::before {
   content: "";
   position: absolute;
-  left: 2.65rem;
-  top: 5.3rem;
-  bottom: -1.4rem;
+  left: 3rem;
+  top: 5.6rem;
+  bottom: -1.6rem;
   width: 5px;
   background: var(--border);
   border-radius: 3px;
@@ -945,7 +977,6 @@ body {
 }
 
 .path__node {
-  flex: none;
   width: 5.3rem;
   height: 5.3rem;
   display: grid;
@@ -970,7 +1001,7 @@ body {
 
 .path__step--done .path__node {
   background: var(--yellow);
-  color: #4a3a00;
+  color: var(--on-brand-muted);
   box-shadow:
     0 6px 0 var(--yellow-deep),
     inset 0 3px 0 rgba(255, 255, 255, 0.45);
@@ -982,7 +1013,7 @@ body {
   height: 6rem;
   font-size: 2.3rem;
   background: var(--blue);
-  color: #fff;
+  color: var(--on-accent);
   box-shadow:
     0 7px 0 var(--blue-deep),
     inset 0 3px 0 rgba(255, 255, 255, 0.3);
@@ -1223,7 +1254,7 @@ body {
 /* Colour carries the meaning: green for "got it", orange for "struggled". */
 .button--success {
   background: var(--green);
-  color: #fff;
+  color: var(--on-accent);
   box-shadow: 0 5px 0 var(--green-deep);
 }
 
@@ -1588,4 +1619,10 @@ body {
 
 .answerbox__ng {
   color: var(--orange-deep);
+}
+
+.quiz__score {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--green);
 }

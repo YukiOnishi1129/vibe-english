@@ -3,10 +3,18 @@
   "compilerOptions": {
     "lib": ["ES2023"],
     "types": ["node"],
+    "baseUrl": ".",
+    "paths": { "@/*": ["./apps/web/src/*"] },
+    "jsx": "react-jsx",
     "outDir": "./dist-types/tools",
     "tsBuildInfoFile": "./dist-types/tools/.tsbuildinfo"
   },
-  "include": ["scripts", "tests", "apps/web/vite.config.ts"],
+  "include": [
+    "scripts",
+    "tests",
+    "apps/web/vite.config.ts",
+    "apps/web/src/features/chunks/hooks/useWrapUpQuiz.ts"
+  ],
   "references": [
     { "path": "./packages/content" },
     { "path": "./packages/db" },

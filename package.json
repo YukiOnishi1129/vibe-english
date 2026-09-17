@@ -18,7 +18,8 @@
     "db:codegen": "kysely-codegen --out-file packages/db/src/generated.ts",
     "db:sync": "npm run db:migrate && npm run db:codegen",
     "db:seed": "tsx scripts/seed.ts",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "check:design": "node scripts/check-design-tokens.mjs"
   },
   "devDependencies": {
     "@types/node": "^22.15.3",

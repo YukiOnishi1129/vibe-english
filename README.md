@@ -209,6 +209,14 @@ DELETE /api/chunks/:id/flags/hard
 GET    /api/flags/hard
 ```
 
+## Design
+
+UI の決めごとは [docs/DESIGN.md](docs/DESIGN.md) にまとめています。色の役割、
+イエローの面積制限、角丸・影・フォントの使い分け、やらないことなど。
+新しい画面を追加するときは先に目を通してください。
+
+色の直書きは `npm run check:design` が CI で弾きます。
+
 ## Lesson content
 
 レッスンは `content/chunks/*.md` で Git 管理します。1 ファイル 1 チャンクで、front matter と日本語の見出しで構成します。`## 内部メモ` はアプリには一切表示されません（テストで担保しています）。

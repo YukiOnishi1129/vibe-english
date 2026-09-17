@@ -113,8 +113,11 @@ export function TodayViewPresenter({
           </p>
           <h1 className="finished__title">今日はここまで！</h1>
           <p className="muted">
-            {streak.current}日連続。明日もこの調子で。
+            {streak.current}日連続。仕上げにミニクイズはどう？
           </p>
+          <Link className="button button--primary" to="/quiz">
+            ミニクイズ（5問）
+          </Link>
           <Link className="button button--ghost" to="/review">
             復習する
           </Link>
@@ -139,20 +142,26 @@ export function TodayViewPresenter({
               .filter(Boolean)
               .join(" ")}
           >
-            <Link
-              className="path__node"
-              to={`/practice/${node.chunk.id}`}
-              aria-current={node.current ? "step" : undefined}
-            >
-              <NodeIcon
-                kind={
-                  node.done ? "done" : node.chunk.needsReview ? "review" : "todo"
-                }
-              />
-              <span className="visually-hidden">
-                {node.done ? "完了" : "未完了"}
-              </span>
-            </Link>
+            <div className="path__lane">
+              <Link
+                className="path__node"
+                to={`/practice/${node.chunk.id}`}
+                aria-current={node.current ? "step" : undefined}
+              >
+                <NodeIcon
+                  kind={
+                    node.done
+                      ? "done"
+                      : node.chunk.needsReview
+                        ? "review"
+                        : "todo"
+                  }
+                />
+                <span className="visually-hidden">
+                  {node.done ? "完了" : "未完了"}
+                </span>
+              </Link>
+            </div>
 
             <div className="path__label">
               <p className="path__phrase">{node.chunk.phrase}</p>

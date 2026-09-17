@@ -52,9 +52,13 @@ export function useSignOut(onSignedOut?: () => void) {
   const mutation = useMutation({
     mutationFn: signOutRequest,
     onSuccess: async () => {
-      // Drop every cached query so the next user starts clean.
-      queryClient.clear();
-      await queryClient.invalidateQueries({ queryKey: authKeys.session() });
+      // Remove everything except the session query, then refetch that one.
+      // clear() would also detach the active observers, leaving the screen
+      // showing stale data with nothing left to trigger a refetch.
+      queryClient.removeQueries({
+        predicate: (query) => query.queryKey[0] !== authKeys.all()[0],
+      });
+      await queryClient.refetchQueries({ queryKey: authKeys.session() });
       onSignedOut?.();
     },
   });
