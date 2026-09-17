@@ -1,23 +1,16 @@
-import { useState } from "react";
-import { api } from "../api";
+// Presentational only: props in, JSX out.
 
-export function LoginView() {
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+export type LoginViewPresenterProps = {
+  busy: boolean;
+  failed: boolean;
+  onSignIn: () => void;
+};
 
-  // Better Auth returns the provider URL from a POST; the browser then
-  // navigates there for the consent screen.
-  const signIn = async () => {
-    setBusy(true);
-    setError(null);
-    try {
-      window.location.href = await api.startGoogleSignIn("/");
-    } catch {
-      setError("ログインを開始できませんでした。もう一度お試しください。");
-      setBusy(false);
-    }
-  };
-
+export function LoginViewPresenter({
+  busy,
+  failed,
+  onSignIn,
+}: LoginViewPresenterProps) {
   return (
     <main className="screen screen--center">
       <div className="login">
@@ -34,13 +27,17 @@ export function LoginView() {
         <button
           type="button"
           className="button button--primary"
-          onClick={signIn}
+          onClick={onSignIn}
           disabled={busy}
         >
           {busy ? "接続中…" : "Google でログイン"}
         </button>
 
-        {error && <p className="error">{error}</p>}
+        {failed && (
+          <p className="error">
+            ログインを開始できませんでした。もう一度お試しください。
+          </p>
+        )}
 
         <p className="login__note">ログインすると練習の記録が保存されます。</p>
       </div>

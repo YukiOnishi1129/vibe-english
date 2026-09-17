@@ -1,25 +1,31 @@
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import type { Chunk, Me } from "@vibe-english/domain";
-import { api } from "../api";
+import type { Chunk } from "@vibe-english/domain";
+
+// Presentational only: props in, JSX out. No data fetching, no effects.
+
+export type TodayViewPresenterProps = {
+  userName: string;
+  chunks: Chunk[] | undefined;
+  doneCount: number;
+  isLoading: boolean;
+  errorMessage: string | null;
+  signingOut: boolean;
+  onSignOut: () => void;
+};
 
 function isCompleted(chunk: Chunk) {
   return (chunk.progress?.completedCount ?? 0) > 0;
 }
 
-export function TodayView({ user }: { user: Me }) {
-  const [chunks, setChunks] = useState<Chunk[] | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    api
-      .getTodayChunks()
-      .then(setChunks)
-      .catch(() => setError("読み込みに失敗しました。"));
-  }, []);
-
-  const doneCount = chunks?.filter(isCompleted).length ?? 0;
-
+export function TodayViewPresenter({
+  userName,
+  chunks,
+  doneCount,
+  isLoading,
+  errorMessage,
+  signingOut,
+  onSignOut,
+}: TodayViewPresenterProps) {
   return (
     <main className="screen">
       <header className="header">
@@ -32,12 +38,22 @@ export function TodayView({ user }: { user: Me }) {
         </Link>
       </header>
 
-      <p className="muted">
-        {user.name} さん — {chunks ? `${doneCount}/${chunks.length} 完了` : "…"}
-      </p>
+      <div className="header__row">
+        <p className="muted">
+          {userName} さん — {chunks ? `${doneCount}/${chunks.length} 完了` : "…"}
+        </p>
+        <button
+          type="button"
+          className="linkish"
+          disabled={signingOut}
+          onClick={onSignOut}
+        >
+          {signingOut ? "…" : "ログアウト"}
+        </button>
+      </div>
 
-      {error && <p className="error">{error}</p>}
-      {!chunks && !error && <p className="muted">読み込み中…</p>}
+      {errorMessage && <p className="error">{errorMessage}</p>}
+      {isLoading && <p className="muted">読み込み中…</p>}
 
       <ul className="card-list">
         {chunks?.map((chunk) => (
@@ -48,7 +64,9 @@ export function TodayView({ user }: { user: Me }) {
                 <p className="card__meaning">{chunk.meaningJa}</p>
               </div>
               <div className="card__tags">
-                {isCompleted(chunk) && <span className="tag tag--done">完了</span>}
+                {isCompleted(chunk) && (
+                  <span className="tag tag--done">完了</span>
+                )}
                 {chunk.isHard && <span className="tag tag--hard">難しい</span>}
                 {chunk.level && <span className="tag">{chunk.level}</span>}
               </div>

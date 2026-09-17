@@ -86,7 +86,13 @@ export function createApiClient(options: ApiClientOptions = {}) {
         },
       ).then((r) => r.url),
 
-    signOut: () => request<unknown>("/api/auth/sign-out", { method: "POST" }),
+    /** Clears the session cookie. Better Auth requires a JSON body here. */
+    signOut: () =>
+      request<{ success: boolean }>("/api/auth/sign-out", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: "{}",
+      }),
   };
 }
 

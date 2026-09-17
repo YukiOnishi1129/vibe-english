@@ -1,0 +1,29 @@
+{
+  "folders": [
+    { "name": "root", "path": "." },
+    { "name": "web", "path": "apps/web" },
+    { "name": "api", "path": "apps/api" },
+    { "name": "domain", "path": "packages/domain" },
+    { "name": "db", "path": "packages/db" },
+    { "name": "content", "path": "packages/content" },
+    { "name": "api-client", "path": "packages/api-client" }
+  ],
+  "settings": {
+    // Use the workspace TypeScript so every folder agrees on the version.
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "typescript.enablePromptUseWorkspaceTsdk": true,
+    "eslint.useFlatConfig": true,
+    "eslint.workingDirectories": [{ "mode": "auto" }],
+    "editor.codeActionsOnSave": { "source.fixAll.eslint": "explicit" },
+    "search.exclude": {
+      "**/node_modules": true,
+      "**/dist": true,
+      "**/dist-types": true,
+      "**/.wrangler": true
+    },
+    "files.exclude": { "**/.DS_Store": true }
+  },
+  "extensions": {
+    "recommendations": ["dbaeumer.vscode-eslint"]
+  }
+}

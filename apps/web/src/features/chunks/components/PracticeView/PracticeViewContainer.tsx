@@ -1,0 +1,64 @@
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useSpeech } from "@/shared/hooks/useSpeech";
+import {
+  useChunkDetail,
+  useCompleteChunk,
+  useToggleHardFlag,
+} from "@/features/chunks/hooks/useChunks";
+import { usePracticeSteps } from "@/features/chunks/hooks/usePracticeSteps";
+import { PracticeViewPresenter } from "./PracticeViewPresenter";
+
+export function PracticeViewContainer() {
+  const { chunkId } = useParams<{ chunkId: string }>();
+  const navigate = useNavigate();
+  const { supported, speak } = useSpeech();
+  const steps = usePracticeSteps();
+
+  const { data: chunk, isPending, isError } = useChunkDetail(chunkId);
+  const complete = useCompleteChunk(chunkId ?? "");
+  const toggleHard = useToggleHardFlag(chunkId ?? "");
+
+  if (isError) {
+    return (
+      <main className="screen">
+        <p className="error">このフレーズを読み込めませんでした。</p>
+        <Link className="button button--ghost" to="/">
+          今日へ戻る
+        </Link>
+      </main>
+    );
+  }
+
+  if (isPending || !chunk) {
+    return (
+      <main className="screen screen--center">
+        <p className="muted">読み込み中…</p>
+      </main>
+    );
+  }
+
+  return (
+    <PracticeViewPresenter
+      chunk={chunk}
+      step={steps.step}
+      stepIndex={steps.index}
+      steps={steps.steps}
+      isFirst={steps.isFirst}
+      isLast={steps.isLast}
+      speechSupported={supported}
+      completed={complete.isSuccess}
+      saving={complete.isPending}
+      errorMessage={
+        complete.isError
+          ? "保存に失敗しました。もう一度お試しください。"
+          : null
+      }
+      onSpeak={speak}
+      onToggleHard={() => toggleHard.mutate(!chunk.isHard)}
+      onComplete={() => complete.mutate()}
+      onNext={steps.next}
+      onBack={steps.back}
+      onLeave={() => navigate("/")}
+    />
+  );
+}

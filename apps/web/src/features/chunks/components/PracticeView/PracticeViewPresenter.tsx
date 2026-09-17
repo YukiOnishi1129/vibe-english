@@ -1,24 +1,11 @@
-import { useCallback, useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import type { Chunk, ChunkDrill } from "@vibe-english/domain";
-import { api } from "../api";
-import { useSpeech } from "../useSpeech";
+import type { PracticeStep } from "@/features/chunks/hooks/usePracticeSteps";
 
-const STEPS = [
-  "聞く",
-  "まねる",
-  "使い方",
-  "穴埋め",
-  "日本語から",
-  "全文",
-  "完了",
-] as const;
+// Presentational only. All data and mutations arrive as props.
 
-function findDrill(chunk: Chunk, type: ChunkDrill["type"]) {
-  return chunk.drills.find((drill) => drill.type === type) ?? null;
-}
-
-/** Drill step shared by 穴埋め and 日本語から: prompt + reveal. */
+/** Local reveal state is pure UI, so it stays inside the presenter. */
 function DrillStep({
   drill,
   hint,
@@ -30,7 +17,6 @@ function DrillStep({
 }) {
   const [revealed, setRevealed] = useState(false);
 
-  // A new drill starts hidden again.
   useEffect(() => setRevealed(false), [drill?.id]);
 
   if (!drill) return <p className="muted">この問題はまだありません。</p>;
@@ -64,75 +50,46 @@ function DrillStep({
   );
 }
 
-export function PracticeView() {
-  const { chunkId } = useParams<{ chunkId: string }>();
-  const navigate = useNavigate();
-  const { supported, speak } = useSpeech();
+export type PracticeViewPresenterProps = {
+  chunk: Chunk;
+  step: PracticeStep;
+  stepIndex: number;
+  steps: readonly string[];
+  isLast: boolean;
+  isFirst: boolean;
+  speechSupported: boolean;
+  completed: boolean;
+  saving: boolean;
+  errorMessage: string | null;
+  onSpeak: (text: string, rate?: number) => void;
+  onToggleHard: () => void;
+  onComplete: () => void;
+  onNext: () => void;
+  onBack: () => void;
+  onLeave: () => void;
+};
 
-  const [chunk, setChunk] = useState<Chunk | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [stepIndex, setStepIndex] = useState(0);
-  const [completed, setCompleted] = useState(false);
-  const [saving, setSaving] = useState(false);
-
-  useEffect(() => {
-    if (!chunkId) return;
-    setChunk(null);
-    setStepIndex(0);
-    setCompleted(false);
-    api
-      .getChunk(chunkId)
-      .then(setChunk)
-      .catch(() => setError("このフレーズを読み込めませんでした。"));
-  }, [chunkId]);
-
-  const toggleHard = useCallback(async () => {
-    if (!chunk) return;
-    const next = !chunk.isHard;
-    // Optimistic: the toggle should feel instant.
-    setChunk({ ...chunk, isHard: next });
-    try {
-      await api.setHardFlag(chunk.id, next);
-    } catch {
-      setChunk({ ...chunk, isHard: !next });
-    }
-  }, [chunk]);
-
-  const complete = useCallback(async () => {
-    if (!chunk || saving) return;
-    setSaving(true);
-    try {
-      await api.completeChunk(chunk.id);
-      setCompleted(true);
-    } catch {
-      setError("保存に失敗しました。もう一度お試しください。");
-    } finally {
-      setSaving(false);
-    }
-  }, [chunk, saving]);
-
-  if (error) {
-    return (
-      <main className="screen">
-        <p className="error">{error}</p>
-        <Link className="button button--ghost" to="/">
-          今日へ戻る
-        </Link>
-      </main>
-    );
-  }
-
-  if (!chunk) {
-    return (
-      <main className="screen screen--center">
-        <p className="muted">読み込み中…</p>
-      </main>
-    );
-  }
-
-  const step = STEPS[stepIndex];
+export function PracticeViewPresenter({
+  chunk,
+  step,
+  stepIndex,
+  steps,
+  isLast,
+  isFirst,
+  speechSupported,
+  completed,
+  saving,
+  errorMessage,
+  onSpeak,
+  onToggleHard,
+  onComplete,
+  onNext,
+  onBack,
+  onLeave,
+}: PracticeViewPresenterProps) {
   const firstExample = chunk.examples[0];
-  const isLastStep = stepIndex === STEPS.length - 1;
+  const drillOf = (type: ChunkDrill["type"]) =>
+    chunk.drills.find((drill) => drill.type === type) ?? null;
 
   return (
     <main className="screen">
@@ -143,7 +100,7 @@ export function PracticeView() {
         <button
           type="button"
           className={`chip ${chunk.isHard ? "chip--on" : ""}`}
-          onClick={toggleHard}
+          onClick={onToggleHard}
           aria-pressed={chunk.isHard}
         >
           難しい
@@ -153,7 +110,7 @@ export function PracticeView() {
       <h1 className="practice__phrase">{chunk.phrase}</h1>
 
       <ol className="stepper" aria-label="練習ステップ">
-        {STEPS.map((label, index) => (
+        {steps.map((label, index) => (
           <li
             key={label}
             className={`stepper__dot ${index <= stepIndex ? "stepper__dot--on" : ""}`}
@@ -169,10 +126,8 @@ export function PracticeView() {
           {stepIndex + 1}. {step}
         </h2>
 
-        {!supported && step !== "使い方" && (
-          <p className="muted">
-            このブラウザは音声読み上げに対応していません。
-          </p>
+        {!speechSupported && step !== "使い方" && (
+          <p className="muted">このブラウザは音声読み上げに対応していません。</p>
         )}
 
         {step === "聞く" && (
@@ -181,7 +136,7 @@ export function PracticeView() {
             <button
               type="button"
               className="button button--primary"
-              onClick={() => speak(chunk.phrase)}
+              onClick={() => onSpeak(chunk.phrase)}
             >
               🔊 聞く
             </button>
@@ -189,7 +144,7 @@ export function PracticeView() {
               <button
                 type="button"
                 className="button button--ghost"
-                onClick={() => speak(firstExample.english)}
+                onClick={() => onSpeak(firstExample.english)}
               >
                 🔊 例文を聞く
               </button>
@@ -203,14 +158,14 @@ export function PracticeView() {
             <button
               type="button"
               className="button button--primary"
-              onClick={() => speak(chunk.phrase, 0.75)}
+              onClick={() => onSpeak(chunk.phrase, 0.75)}
             >
               🐢 ゆっくり聞く
             </button>
             <button
               type="button"
               className="button button--ghost"
-              onClick={() => speak(chunk.phrase)}
+              onClick={() => onSpeak(chunk.phrase)}
             >
               🔊 普通の速さ
             </button>
@@ -232,17 +187,17 @@ export function PracticeView() {
 
         {step === "穴埋め" && (
           <DrillStep
-            drill={findDrill(chunk, "blank")}
+            drill={drillOf("blank")}
             hint="空欄に入る語は？"
-            onSpeak={speak}
+            onSpeak={onSpeak}
           />
         )}
 
         {step === "日本語から" && (
           <DrillStep
-            drill={findDrill(chunk, "translate")}
+            drill={drillOf("translate")}
             hint="英語にしてみよう。"
-            onSpeak={speak}
+            onSpeak={onSpeak}
           />
         )}
 
@@ -253,7 +208,7 @@ export function PracticeView() {
                 <button
                   type="button"
                   className="examples__play"
-                  onClick={() => speak(example.english)}
+                  onClick={() => onSpeak(example.english)}
                   aria-label={`${example.english} を再生`}
                 >
                   🔊
@@ -282,13 +237,14 @@ export function PracticeView() {
                 <button
                   type="button"
                   className="button button--primary"
-                  onClick={complete}
+                  onClick={onComplete}
                   disabled={saving}
                 >
                   {saving ? "保存中…" : "完了にする"}
                 </button>
               </>
             )}
+            {errorMessage && <p className="error">{errorMessage}</p>}
           </div>
         )}
       </section>
@@ -297,16 +253,16 @@ export function PracticeView() {
         <button
           type="button"
           className="button button--ghost"
-          onClick={() => setStepIndex((index) => Math.max(0, index - 1))}
-          disabled={stepIndex === 0}
+          onClick={onBack}
+          disabled={isFirst}
         >
           戻る
         </button>
-        {isLastStep ? (
+        {isLast ? (
           <button
             type="button"
             className="button button--ghost"
-            onClick={() => navigate("/")}
+            onClick={onLeave}
           >
             一覧へ
           </button>
@@ -314,9 +270,7 @@ export function PracticeView() {
           <button
             type="button"
             className="button button--primary"
-            onClick={() =>
-              setStepIndex((index) => Math.min(STEPS.length - 1, index + 1))
-            }
+            onClick={onNext}
           >
             次へ
           </button>

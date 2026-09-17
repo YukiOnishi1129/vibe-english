@@ -72,6 +72,9 @@ jobs:
       - name: Seed lesson content
         run: npm run db:seed
 
+      - name: Lint
+        run: npm run lint
+
       - name: Typecheck
         run: npm run typecheck
 

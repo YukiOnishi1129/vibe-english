@@ -1,3 +1,4 @@
+import { fileURLToPath, URL } from "node:url";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
@@ -6,6 +7,12 @@ import react from "@vitejs/plugin-react";
 // Local dev: Vite (5173) proxies /api to the Worker dev server (8787).
 export default defineConfig({
   plugins: [react()],
+  resolve: {
+    alias: {
+      // Absolute imports: "@/features/..." instead of "../../features/..."
+      "@": fileURLToPath(new URL("./src", import.meta.url)),
+    },
+  },
   build: {
     // The API Worker serves this directory as its static assets, so both the
     // React app and /api/* ship from one origin.

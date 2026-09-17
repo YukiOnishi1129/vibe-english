@@ -1,19 +1,19 @@
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import type { Chunk } from "@vibe-english/domain";
-import { api } from "../api";
 
-export function HardListView() {
-  const [chunks, setChunks] = useState<Chunk[] | null>(null);
-  const [error, setError] = useState<string | null>(null);
+// Presentational only.
 
-  useEffect(() => {
-    api
-      .getHardChunks()
-      .then(setChunks)
-      .catch(() => setError("読み込みに失敗しました。"));
-  }, []);
+export type HardListViewPresenterProps = {
+  chunks: Chunk[] | undefined;
+  isLoading: boolean;
+  errorMessage: string | null;
+};
 
+export function HardListViewPresenter({
+  chunks,
+  isLoading,
+  errorMessage,
+}: HardListViewPresenterProps) {
   return (
     <main className="screen">
       <header className="header">
@@ -26,8 +26,8 @@ export function HardListView() {
         </Link>
       </header>
 
-      {error && <p className="error">{error}</p>}
-      {!chunks && !error && <p className="muted">読み込み中…</p>}
+      {errorMessage && <p className="error">{errorMessage}</p>}
+      {isLoading && <p className="muted">読み込み中…</p>}
 
       {chunks?.length === 0 && (
         <p className="muted">

@@ -113,6 +113,35 @@ body {
   white-space: nowrap;
 }
 
+.header__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+/* A button that reads as a quiet text link. */
+.linkish {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.85rem;
+  text-decoration: underline;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.linkish:hover {
+  color: var(--text);
+}
+
+.linkish:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .header__link:hover {
   color: var(--text);
 }
