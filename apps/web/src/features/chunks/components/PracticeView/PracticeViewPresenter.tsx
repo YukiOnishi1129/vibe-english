@@ -4,7 +4,7 @@ import type {
   PracticeCard as Card,
   SwipeDirection,
 } from "@/features/chunks/hooks/usePracticeCards";
-import { PracticeCard } from "./PracticeCard";
+import { PracticeCard } from "@/features/chunks/components/PracticeView/PracticeCard";
 
 // Presentational only. All data and mutations arrive as props.
 

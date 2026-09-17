@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import type { Chunk, ChunkDrill } from "@vibe-english/domain";
+import { seededShuffle } from "@/features/chunks/utils/shuffle";
 
 export type QuizQuestion = {
   chunkId: string;
@@ -9,26 +10,6 @@ export type QuizQuestion = {
 
 /** How many questions the wrap-up asks, however many chunks are available. */
 export const QUIZ_LENGTH = 5;
-
-/**
- * Deterministic shuffle from a seed, so the same day's quiz keeps its order
- * across re-renders instead of reshuffling on every keystroke.
- */
-function shuffle<T>(items: T[], seed: number): T[] {
-  const result = [...items];
-  let state = seed;
-
-  for (let i = result.length - 1; i > 0; i--) {
-    // xorshift: small, dependency-free, and good enough for question order.
-    state ^= state << 13;
-    state ^= state >>> 17;
-    state ^= state << 5;
-    const j = Math.abs(state) % (i + 1);
-    [result[i], result[j]] = [result[j], result[i]];
-  }
-
-  return result;
-}
 
 export function buildQuiz(chunks: Chunk[], seed: number): QuizQuestion[] {
   const pool: QuizQuestion[] = [];
@@ -41,7 +22,7 @@ export function buildQuiz(chunks: Chunk[], seed: number): QuizQuestion[] {
 
   // One question per chunk first, so every phrase from the day shows up before
   // any phrase repeats.
-  const shuffled = shuffle(pool, seed);
+  const shuffled = seededShuffle(pool, seed);
   const seen = new Set<string>();
   const spread: QuizQuestion[] = [];
   const rest: QuizQuestion[] = [];

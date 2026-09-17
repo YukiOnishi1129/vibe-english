@@ -138,7 +138,41 @@ box-shadow: none;
 
 ---
 
-## 10. 迷ったら
+## 10. ファイル構成
+
+**1ファイル1コンポーネント。** ESLint (`local/one-component-per-file`) が強制します。
+
+```
+components/
+  TodayView/              # Container / Presenter に分かれるもの
+    index.ts              # Container だけを公開
+    TodayViewContainer.tsx
+    TodayViewPresenter.tsx
+  NodeIcon/               # 単独コンポーネントも同じ形
+    index.ts
+    NodeIcon.tsx
+```
+
+- **Container**: hooks を呼び、値を Presenter に渡す。JSX は書かない
+- **Presenter**: props を受けて描画するだけ。fetch・useQuery 禁止
+- 補助コンポーネントも**独立したディレクトリ**に置く。同じファイルに同居させない
+
+### 純粋関数は utils へ
+
+コンポーネントや hooks のファイルに、描画・状態と無関係な関数を置かない。
+
+```
+features/chunks/
+  utils/
+    answer.ts     # 採点ロジック
+    shuffle.ts    # 並び替え
+```
+
+utils はテストしやすく、`tests/` から直接 import できます。
+
+---
+
+## 11. 迷ったら
 
 1. **イエローを減らす**方に倒す
 2. **余白を増やす**方に倒す

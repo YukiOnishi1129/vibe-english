@@ -5,12 +5,14 @@ import reactHooks from "eslint-plugin-react-hooks";
 import queryKeysInQueriesOnly from "./eslint-rules/query-keys-in-queries-only.js";
 import presenterIsPure from "./eslint-rules/presenter-is-pure.js";
 import componentFolderStructure from "./eslint-rules/component-folder-structure.js";
+import oneComponentPerFile from "./eslint-rules/one-component-per-file.js";
 
 const local = {
   rules: {
     "query-keys-in-queries-only": queryKeysInQueriesOnly,
     "presenter-is-pure": presenterIsPure,
     "component-folder-structure": componentFolderStructure,
+    "one-component-per-file": oneComponentPerFile,
   },
 };
 
@@ -38,6 +40,7 @@ export default tseslint.config(
       "local/query-keys-in-queries-only": "error",
       "local/presenter-is-pure": "error",
       "local/component-folder-structure": "error",
+      "local/one-component-per-file": "error",
 
       "no-restricted-imports": [
         "error",

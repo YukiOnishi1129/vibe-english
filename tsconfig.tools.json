@@ -13,7 +13,7 @@
     "scripts",
     "tests",
     "apps/web/vite.config.ts",
-    "apps/web/src/features/chunks/hooks/useWrapUpQuiz.ts"
+    "apps/web/src/features/**/utils/**/*.ts"
   ],
   "references": [
     { "path": "./packages/content" },

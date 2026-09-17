@@ -4,17 +4,8 @@
  */
 import { describe, expect, it } from "vitest";
 
-/** Mirrors isCorrect() in PracticeCard.tsx. */
-function normalise(value: string) {
-  return value
-    .trim()
-    .toLowerCase()
-    .replace(/[.!?,]+$/g, "")
-    .replace(/\s+/g, " ");
-}
 
-const isCorrect = (input: string, answer: string) =>
-  normalise(input) === normalise(answer);
+import { isAnswerCorrect as isCorrect } from "../apps/web/src/features/chunks/utils/answer";
 
 describe("typed drill grading", () => {
   it("accepts the exact answer", () => {
