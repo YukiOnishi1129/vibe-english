@@ -71,9 +71,20 @@ export function createApiClient(options: ApiClientOptions = {}) {
     getHardChunks: () =>
       request<{ chunks: Chunk[] }>("/api/flags/hard").then((r) => r.chunks),
 
-    /** Full-page redirect into Better Auth's Google flow. */
-    googleSignInUrl: (callbackPath = "/") =>
-      `${baseUrl}/api/auth/sign-in/social?provider=google&callbackURL=${encodeURIComponent(callbackPath)}`,
+    /**
+     * Starts Google sign-in. Better Auth's social endpoint is POST-only and
+     * answers with the provider URL to send the browser to, so this returns
+     * that URL rather than being a link target.
+     */
+    startGoogleSignIn: (callbackPath = "/") =>
+      request<{ url: string; redirect: boolean }>(
+        "/api/auth/sign-in/social",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ provider: "google", callbackURL: callbackPath }),
+        },
+      ).then((r) => r.url),
 
     signOut: () => request<unknown>("/api/auth/sign-out", { method: "POST" }),
   };
