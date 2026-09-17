@@ -16,14 +16,8 @@ export function HardListViewPresenter({
 }: HardListViewPresenterProps) {
   return (
     <main className="screen">
-      <header className="header">
-        <div>
-          <p className="header__badge">Vibe English</p>
-          <h1 className="header__title">難しいリスト</h1>
-        </div>
-        <Link className="header__link" to="/">
-          今日へ
-        </Link>
+      <header className="page-head">
+        <h1 className="page-head__title">難しいリスト</h1>
       </header>
 
       {errorMessage && <p className="error">{errorMessage}</p>}

@@ -9,8 +9,6 @@ export type TodayViewPresenterProps = {
   doneCount: number;
   isLoading: boolean;
   errorMessage: string | null;
-  signingOut: boolean;
-  onSignOut: () => void;
 };
 
 function isCompleted(chunk: Chunk) {
@@ -23,34 +21,15 @@ export function TodayViewPresenter({
   doneCount,
   isLoading,
   errorMessage,
-  signingOut,
-  onSignOut,
 }: TodayViewPresenterProps) {
   return (
     <main className="screen">
-      <header className="header">
-        <div>
-          <p className="header__badge">Vibe English</p>
-          <h1 className="header__title">今日のフレーズ</h1>
-        </div>
-        <Link className="header__link" to="/hard">
-          難しいリスト
-        </Link>
-      </header>
-
-      <div className="header__row">
+      <header className="page-head">
+        <h1 className="page-head__title">今日のフレーズ</h1>
         <p className="muted">
           {userName} さん — {chunks ? `${doneCount}/${chunks.length} 完了` : "…"}
         </p>
-        <button
-          type="button"
-          className="linkish"
-          disabled={signingOut}
-          onClick={onSignOut}
-        >
-          {signingOut ? "…" : "ログアウト"}
-        </button>
-      </div>
+      </header>
 
       {errorMessage && <p className="error">{errorMessage}</p>}
       {isLoading && <p className="muted">読み込み中…</p>}
