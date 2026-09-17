@@ -1,22 +1,35 @@
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useRef } from "react";
+import { Link, useParams } from "react-router-dom";
 import { useSpeech } from "@/shared/hooks/useSpeech";
+import { useSwipe } from "@/shared/hooks/useSwipe";
 import {
   useChunkDetail,
   useFinishChunk,
   useToggleHardFlag,
 } from "@/features/chunks/hooks/useChunks";
-import { usePracticeSteps } from "@/features/chunks/hooks/usePracticeSteps";
+import { usePracticeCards } from "@/features/chunks/hooks/usePracticeCards";
 import { PracticeViewPresenter } from "./PracticeViewPresenter";
 
 export function PracticeViewContainer() {
   const { chunkId } = useParams<{ chunkId: string }>();
-  const navigate = useNavigate();
   const { supported, speak } = useSpeech();
-  const steps = usePracticeSteps();
 
   const { data: chunk, isPending, isError } = useChunkDetail(chunkId);
   const finish = useFinishChunk(chunkId ?? "");
   const toggleHard = useToggleHardFlag(chunkId ?? "");
+
+  // Saving happens the moment the last card is dismissed, not in an effect:
+  // the deck hands back the outcome it has just computed, so there is no
+  // window where a render could read a stale answer set.
+  const saved = useRef(false);
+  const handleComplete = (struggled: boolean) => {
+    if (saved.current || !chunkId) return;
+    saved.current = true;
+    finish.mutate(struggled ? "struggled" : "got_it");
+  };
+
+  const deck = usePracticeCards(chunk, handleComplete);
+  const { state, handlers } = useSwipe(deck.advance);
 
   if (isError) {
     return (
@@ -40,24 +53,31 @@ export function PracticeViewContainer() {
   return (
     <PracticeViewPresenter
       chunk={chunk}
-      step={steps.step}
-      stepIndex={steps.index}
-      steps={steps.steps}
-      isFirst={steps.isFirst}
-      isLast={steps.isLast}
-      speechSupported={supported}
-      completed={finish.isSuccess}
+      card={deck.card}
+      nextCard={deck.nextCard}
+      index={deck.index}
+      total={deck.total}
+      finished={deck.finished}
+      lastDirection={deck.lastDirection}
+      dragX={state.dx}
+      dragging={state.dragging}
+      flyingOut={state.flyingOut}
       saving={finish.isPending}
+      saved={finish.isSuccess}
       streakAfter={finish.data?.streak.current ?? null}
       errorMessage={
-        finish.isError ? "保存に失敗しました。もう一度お試しください。" : null
+        !supported && deck.card?.kind === "listen"
+          ? "このブラウザは音声読み上げに対応していません。"
+          : finish.isError
+            ? "保存に失敗しました。"
+            : null
       }
+      swipeHandlers={handlers}
       onSpeak={speak}
+      onDrillAnswer={deck.markDrill}
+      onNext={() => deck.advance("right")}
+      onBack={deck.back}
       onToggleHard={() => toggleHard.mutate(!chunk.isHard)}
-      onFinish={(result) => finish.mutate(result)}
-      onNext={steps.next}
-      onBack={steps.back}
-      onLeave={() => navigate("/")}
     />
   );
 }

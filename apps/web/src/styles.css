@@ -1248,3 +1248,344 @@ body {
 .review-group__count {
   color: var(--orange-deep);
 }
+
+/* --- swipeable practice deck ------------------------------------------ */
+.practice__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.practice__counter {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.bookmark {
+  display: grid;
+  place-items: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  padding: 0;
+  border: 2px solid var(--border);
+  border-radius: 0.8rem;
+  background: var(--surface);
+  color: var(--muted);
+  cursor: pointer;
+  line-height: 0;
+}
+
+.bookmark--on {
+  background: var(--orange-soft);
+  border-color: var(--orange);
+  color: var(--orange-deep);
+}
+
+.deck {
+  position: relative;
+  margin-top: 0.5rem;
+  min-height: 21rem;
+}
+
+/* The incoming card settles up from behind, matching where it sat as the
+   under-card a moment ago. */
+@keyframes pcard-enter-right {
+  from {
+    transform: translateY(12px) scale(0.955);
+    opacity: 0.5;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes pcard-enter-left {
+  from {
+    transform: translateY(12px) scale(0.955);
+    opacity: 0.5;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.pcard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 21rem;
+  padding: 1.4rem;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: 1.4rem;
+  box-shadow: 0 8px 0 var(--border);
+  /* The drag follows the pointer, so no transition while dragging. */
+  transition: transform 0.18s ease;
+  touch-action: pan-y;
+  user-select: none;
+  cursor: grab;
+}
+
+/* The contents slide in; the shell itself never remounts. */
+.pcard__slide {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  animation: pcard-enter-right 0.2s ease both;
+}
+
+.pcard__slide--left {
+  animation-name: pcard-enter-left;
+}
+
+.pcard--dragging {
+  transition: none;
+  animation: none;
+  cursor: grabbing;
+}
+
+/* Flying out: a quick ease so the card clears the screen before the next
+   one takes over. */
+.pcard--leaving {
+  transition:
+    transform 0.18s cubic-bezier(0.3, 0, 0.8, 0.2),
+    opacity 0.18s ease;
+  /* Off-screen already, so it must not intercept the next grab — the deck
+     underneath picks it up and settles this card immediately. */
+  pointer-events: none;
+}
+
+/* The deck itself is the fallback gesture target. */
+.deck {
+  touch-action: pan-y;
+}
+
+/* Sitting at rest: no transition, so the next card appears in place rather
+   than travelling back from where the previous one exited. */
+.pcard--settled {
+  transition: none;
+  transform: none;
+}
+
+/* The draggable card always sits above the one behind it. */
+.deck > .pcard:not(.pcard--behind) {
+  position: relative;
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pcard__slide {
+    animation: none;
+  }
+}
+
+/* The real next card, sitting under the current one. */
+.pcard--behind {
+  position: absolute;
+  inset: 0;
+  transform: translateY(12px) scale(0.955);
+  box-shadow: none;
+  z-index: 0;
+  pointer-events: none;
+  transition: transform 0.16s ease;
+  overflow: hidden;
+  /* Opaque: the top card slides over it, so the two must never blend. */
+  background: var(--surface);
+}
+
+/* Dim the contents, not the card, so its background still hides what's under. */
+.pcard--behind .pcard__slide {
+  opacity: 0.45;
+  transition: opacity 0.16s ease;
+}
+
+/* As the top card is dragged away, this one rises to meet the reader. */
+.pcard--behind-rising {
+  transform: translateY(4px) scale(0.99);
+}
+
+.pcard--behind-rising .pcard__slide {
+  opacity: 1;
+}
+
+.pcard--behind .pcard__slide {
+  animation: none;
+}
+
+.pcard__done-peek {
+  align-items: center;
+  justify-content: center;
+}
+
+.pcard__title {
+  margin: 0 0 1rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  color: var(--blue);
+}
+
+.pcard__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  text-align: center;
+}
+
+.pcard__body--text {
+  align-items: stretch;
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.pcard__kicker {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.pcard__phrase {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.9rem;
+  line-height: 1.35;
+}
+
+.pcard__prompt {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.4rem;
+  line-height: 1.5;
+}
+
+.pcard__reveal {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.6rem;
+  color: var(--blue);
+}
+
+.pcard__hint,
+.pcard__judged {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.pcard__judged {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text);
+}
+
+.pcard__listen {
+  width: auto;
+  padding: 0.45rem 1rem;
+  font-size: 0.85rem;
+}
+
+.pcard__judge {
+  display: flex;
+  gap: 0.6rem;
+  width: 100%;
+}
+
+.pcard__judge .button {
+  margin-top: 0;
+}
+
+.deck__nav {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+}
+
+.deck__nav .button {
+  margin-top: 0;
+}
+
+.deck__hint {
+  margin: 0.9rem 0 0;
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+/* --- typed answer ----------------------------------------------------- */
+.answerbox {
+  display: grid;
+  gap: 0.6rem;
+  width: 100%;
+  max-width: 20rem;
+}
+
+.answerbox__input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 2px solid var(--border);
+  border-radius: 0.9rem;
+  background: var(--surface-sunken);
+  color: var(--text);
+  font: inherit;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.answerbox__input:focus-visible {
+  border-color: var(--blue);
+  outline: none;
+}
+
+.answerbox__input--ok {
+  border-color: var(--green);
+  background: var(--green-soft);
+  color: var(--green-deep);
+}
+
+.answerbox__input--ng {
+  border-color: var(--orange);
+  background: var(--orange-soft);
+  color: var(--orange-deep);
+}
+
+.answerbox__input:disabled {
+  opacity: 1;
+}
+
+.answerbox__result {
+  display: grid;
+  gap: 0.5rem;
+  justify-items: center;
+}
+
+.answerbox__ok,
+.answerbox__ng {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.answerbox__ok {
+  color: var(--green);
+}
+
+.answerbox__ng {
+  color: var(--orange-deep);
+}
