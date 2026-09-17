@@ -1,9 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import type { DrillResult } from "@vibe-english/domain";
 import {
   chunkDetailQuery,
   chunkKeys,
   completeChunkRequest,
+  dailySessionQuery,
+  finishChunkRequest,
   hardChunksQuery,
+  reviewGroupsQuery,
   setHardFlagRequest,
   todayChunksQuery,
 } from "@/features/chunks/queries/chunkQueries";
@@ -13,6 +17,26 @@ import {
 
 export function useTodayChunks() {
   return useQuery(todayChunksQuery());
+}
+
+export function useDailySession() {
+  return useQuery(dailySessionQuery());
+}
+
+export function useReviewGroups() {
+  return useQuery(reviewGroupsQuery());
+}
+
+/** Reports the outcome, then refreshes the queue, streak and review list. */
+export function useFinishChunk(chunkId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (result: DrillResult) => finishChunkRequest(chunkId, result),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: chunkKeys.all() });
+    },
+  });
 }
 
 export function useChunkDetail(chunkId: string | undefined) {

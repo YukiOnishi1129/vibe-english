@@ -5,7 +5,7 @@ import { assertEnv, type Env } from "./env";
 import type { AppContext } from "./context";
 import { meRoutes } from "./routes/me";
 import { chunkRoutes } from "./routes/chunks";
-import { flagRoutes } from "./routes/flags";
+import { flagRoutes, reviewRoutes } from "./routes/flags";
 
 const app = new Hono<AppContext>();
 
@@ -36,6 +36,7 @@ app.on(["GET", "POST"], "/api/auth/*", (c) =>
 app.route("/api/me", meRoutes);
 app.route("/api/chunks", chunkRoutes);
 app.route("/api/flags", flagRoutes);
+app.route("/api/review", reviewRoutes);
 
 app.notFound((c) =>
   c.req.path.startsWith("/api/")

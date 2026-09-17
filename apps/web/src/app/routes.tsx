@@ -3,7 +3,7 @@ import { useSession } from "@/features/auth/hooks/useSession";
 import { LoginView } from "@/features/auth/components/LoginView";
 import { TodayView } from "@/features/chunks/components/TodayView";
 import { PracticeView } from "@/features/chunks/components/PracticeView";
-import { HardListView } from "@/features/chunks/components/HardListView";
+import { ReviewView } from "@/features/chunks/components/ReviewView";
 import { AppShell } from "@/shared/components/AppShell";
 
 /** Routing only — no data fetching lives here. */
@@ -30,9 +30,9 @@ export function AppRoutes() {
   return (
     <AppShell user={session.user}>
       <Routes>
-        <Route path="/" element={<TodayView user={session.user} />} />
+        <Route path="/" element={<TodayView />} />
         <Route path="/practice/:chunkId" element={<PracticeView />} />
-        <Route path="/hard" element={<HardListView />} />
+        <Route path="/review" element={<ReviewView />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AppShell>

@@ -5,8 +5,8 @@ import type { Me } from "@vibe-english/domain";
 import { AppShellPresenter, type NavItem } from "./AppShellPresenter";
 
 const NAV_ITEMS: readonly NavItem[] = [
-  { to: "/", label: "今日のフレーズ", icon: "🔥" },
-  { to: "/hard", label: "難しいリスト", icon: "📌" },
+  { to: "/", label: "今日のレッスン", icon: "🔥" },
+  { to: "/review", label: "復習", icon: "🔁" },
 ];
 
 export function AppShellContainer({

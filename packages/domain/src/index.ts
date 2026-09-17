@@ -1,5 +1,9 @@
 export type {
   Chunk,
+  DailySession,
+  DrillResult,
+  ReviewGroup,
+  Streak,
   ChunkDrill,
   ChunkExample,
   ChunkProgress,
@@ -8,6 +12,10 @@ export type {
 } from "./types";
 export {
   HARD_FLAG,
+  DAILY_TARGET,
+  getDailySession,
+  getReviewGroups,
+  finishChunk,
   getTodayChunks,
   getChunk,
   getHardChunks,

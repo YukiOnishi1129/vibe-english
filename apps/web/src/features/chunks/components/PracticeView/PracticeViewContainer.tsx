@@ -2,7 +2,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useSpeech } from "@/shared/hooks/useSpeech";
 import {
   useChunkDetail,
-  useCompleteChunk,
+  useFinishChunk,
   useToggleHardFlag,
 } from "@/features/chunks/hooks/useChunks";
 import { usePracticeSteps } from "@/features/chunks/hooks/usePracticeSteps";
@@ -15,7 +15,7 @@ export function PracticeViewContainer() {
   const steps = usePracticeSteps();
 
   const { data: chunk, isPending, isError } = useChunkDetail(chunkId);
-  const complete = useCompleteChunk(chunkId ?? "");
+  const finish = useFinishChunk(chunkId ?? "");
   const toggleHard = useToggleHardFlag(chunkId ?? "");
 
   if (isError) {
@@ -46,16 +46,15 @@ export function PracticeViewContainer() {
       isFirst={steps.isFirst}
       isLast={steps.isLast}
       speechSupported={supported}
-      completed={complete.isSuccess}
-      saving={complete.isPending}
+      completed={finish.isSuccess}
+      saving={finish.isPending}
+      streakAfter={finish.data?.streak.current ?? null}
       errorMessage={
-        complete.isError
-          ? "保存に失敗しました。もう一度お試しください。"
-          : null
+        finish.isError ? "保存に失敗しました。もう一度お試しください。" : null
       }
       onSpeak={speak}
       onToggleHard={() => toggleHard.mutate(!chunk.isHard)}
-      onComplete={() => complete.mutate()}
+      onFinish={(result) => finish.mutate(result)}
       onNext={steps.next}
       onBack={steps.back}
       onLeave={() => navigate("/")}

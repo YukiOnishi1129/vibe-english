@@ -1,4 +1,12 @@
-import type { Chunk, ChunkProgress, Me } from "@vibe-english/domain";
+import type {
+  Chunk,
+  ChunkProgress,
+  DailySession,
+  DrillResult,
+  Me,
+  ReviewGroup,
+  Streak,
+} from "@vibe-english/domain";
 
 export class ApiError extends Error {
   constructor(
@@ -52,6 +60,22 @@ export function createApiClient(options: ApiClientOptions = {}) {
 
     getTodayChunks: () =>
       request<{ chunks: Chunk[] }>("/api/chunks/today").then((r) => r.chunks),
+
+    getDailySession: () => request<DailySession>("/api/chunks/session"),
+
+    getReviewGroups: () =>
+      request<{ groups: ReviewGroup[] }>("/api/review").then((r) => r.groups),
+
+    /** Reports how it went; drives the review list and the streak. */
+    finishChunk: (id: string, result: DrillResult) =>
+      request<{ progress: ChunkProgress; streak: Streak }>(
+        `/api/chunks/${encodeURIComponent(id)}/finish`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ result }),
+        },
+      ),
 
     getChunk: (id: string) =>
       request<Chunk>(`/api/chunks/${encodeURIComponent(id)}`),

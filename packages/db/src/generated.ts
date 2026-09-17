@@ -85,6 +85,14 @@ export interface User {
   updatedAt: Generated<Timestamp>;
 }
 
+export interface UserDrillResults {
+  chunk_id: string;
+  created_at: Generated<Timestamp>;
+  id: string;
+  result: string;
+  user_id: string;
+}
+
 export interface UserFlags {
   chunk_id: string;
   created_at: Generated<Timestamp>;
@@ -98,6 +106,14 @@ export interface UserProgress {
   last_completed_at: Timestamp | null;
   last_seen_at: Timestamp | null;
   seen_count: Generated<number>;
+  user_id: string;
+}
+
+export interface UserStreaks {
+  current_streak: Generated<number>;
+  last_practiced_on: Timestamp | null;
+  longest_streak: Generated<number>;
+  updated_at: Generated<Timestamp>;
   user_id: string;
 }
 
@@ -118,7 +134,9 @@ export interface DB {
   schema_migrations: SchemaMigrations;
   session: Session;
   user: User;
+  user_drill_results: UserDrillResults;
   user_flags: UserFlags;
   user_progress: UserProgress;
+  user_streaks: UserStreaks;
   verification: Verification;
 }

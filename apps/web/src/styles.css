@@ -1,33 +1,99 @@
 :root {
-  --bg: #f6f7f9;
+  /* Timee-inspired palette: yellow brand, blue CTA, near-black text. */
+  /* Roles, not just hues:
+     yellow = achievement (done, streak, brand)
+     blue   = the next action (current node, CTAs)
+     green  = "got it"
+     orange = review / "struggled" */
+  --yellow: #ffd700;
+  --yellow-soft: #fff4a3;
+  --yellow-deep: #c9a500;
+  --blue: #007aff;
+  --blue-deep: #005edb;
+  --blue-soft: #e3f0ff;
+  --green: #2bb673;
+  --green-deep: #1d8a55;
+  --green-soft: #ddf5e9;
+  --orange: #f2820c;
+  --orange-deep: #c2650a;
+  --orange-soft: #ffeed9;
+  --red: #ff3b30;
+
+  --bg: #ffffff;
   --surface: #ffffff;
-  --text: #16181d;
-  --muted: #6b7280;
-  --border: #e4e7ec;
-  --accent: #4f46e5;
+  --surface-sunken: #f7f7f8;
+  --text: #212121;
+  --muted: #666666;
+  --border: #dcdcdc;
+  --border-strong: #212121;
+
+  --accent: var(--blue);
   --accent-text: #ffffff;
-  --hard: #b45309;
-  --hard-bg: #fef3c7;
-  --done: #047857;
-  --done-bg: #d1fae5;
-  --error: #b91c1c;
+  --accent-shadow: var(--blue-deep);
+
+  --hard: #8a6100;
+  --hard-bg: var(--yellow-soft);
+  --done: #0b7d4e;
+  --done-bg: #d8f5e5;
+  --error: #d92c20;
+
+  --radius-pill: 9999px;
+  --radius-card: 1rem;
+
+  /* Hover fill and the accent used for hovered outlines. */
+  --hover-surface: #f0f1f3;
+  --hover-line: #212121;
+
+  /* Rounded gothic for headings and buttons; body stays on Noto Sans JP so
+     longer Japanese copy keeps its readability. */
+  --font-display:
+    "M PLUS Rounded 1c", "Noto Sans JP", "Hiragino Sans", "Yu Gothic Medium",
+    Meiryo, sans-serif;
+
   color-scheme: light;
 }
 
+/* Timee itself ships light-only; this dark set keeps the same yellow/blue
+   roles at brightness levels that survive a dark surface. */
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #101216;
-    --surface: #191c22;
-    --text: #f2f4f7;
-    --muted: #9aa3b2;
-    --border: #2a2f38;
-    --accent: #818cf8;
-    --accent-text: #14161a;
-    --hard: #fbbf24;
-    --hard-bg: #3a2f12;
-    --done: #6ee7b7;
-    --done-bg: #10302a;
-    --error: #fca5a5;
+    --yellow: #ffd633;
+    --yellow-soft: #4a3f10;
+    --yellow-deep: #b9941c;
+    --blue: #4c9dff;
+    --blue-deep: #1f6fd0;
+    --blue-soft: #16304f;
+    --green: #3fd08a;
+    --green-deep: #1f8f5c;
+    --green-soft: #123528;
+    --orange: #ffa23d;
+    --orange-deep: #c26f14;
+    --orange-soft: #40290f;
+    --red: #ff6b61;
+
+    --bg: #16171a;
+    --surface: #1e2025;
+    --surface-sunken: #24262c;
+    --text: #f4f5f7;
+    --muted: #a5a8b0;
+    --border: #33363d;
+    --border-strong: #f4f5f7;
+
+    --accent: var(--blue);
+    --accent-text: #0e1013;
+    --accent-shadow: var(--blue-deep);
+
+    --hard: var(--yellow);
+    --hard-bg: #40360d;
+    --done: #63d9a0;
+    --done-bg: #123d2e;
+    --error: #ff8078;
+
+    /* Lighter than the surface so hover reads as raised, and a muted gold
+       outline instead of full-strength yellow, which glares on dark. */
+    --hover-surface: #2b2e35;
+    --hover-line: #b99a1f;
+
     color-scheme: dark;
   }
 }
@@ -36,25 +102,34 @@
   box-sizing: border-box;
 }
 
+/* One consistent focus ring. Keyboard users get it; mouse clicks do not. */
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 0.4rem;
+}
+
 body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
   font-family:
-    system-ui,
-    -apple-system,
-    "Hiragino Kaku Gothic ProN",
     "Noto Sans JP",
+    "Hiragino Sans",
+    "Yu Gothic Medium",
+    Meiryo,
     sans-serif;
-  line-height: 1.6;
+  line-height: 1.5;
+  word-break: break-word;
+  overflow-wrap: break-word;
   -webkit-font-smoothing: antialiased;
 }
 
 .screen {
-  max-width: 34rem;
+  max-width: 40rem;
   margin: 0 auto;
-  padding: max(1rem, env(safe-area-inset-top, 0px)) 1rem
-    calc(2rem + env(safe-area-inset-bottom, 0px));
+  padding: max(1.5rem, env(safe-area-inset-top, 0px)) 1.25rem
+    calc(3rem + env(safe-area-inset-bottom, 0px));
 }
 
 .screen--center {
@@ -120,7 +195,12 @@ body {
 /* --- login ---------------------------------------------------------- */
 .login {
   text-align: center;
-  padding: 1rem;
+  padding: 2rem 1.5rem;
+  background: var(--yellow);
+  border: 3px solid #212121;
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 0 #212121;
+  color: #212121;
 }
 
 .login__badge {
@@ -129,7 +209,7 @@ body {
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: #212121;
 }
 
 .login__title {
@@ -140,64 +220,98 @@ body {
 
 .login__lead {
   margin-bottom: 1.75rem;
+  color: #3d3d3d;
 }
 
 .login__note {
   margin-top: 1.25rem;
   font-size: 0.8rem;
-  color: var(--muted);
+  color: #3d3d3d;
 }
 
 /* --- buttons -------------------------------------------------------- */
+/* Timee's signature: pill CTA with a hard offset shadow that collapses on
+   press, so the button visibly depresses. */
 .button {
   display: inline-block;
   width: 100%;
-  padding: 0.8rem 1.25rem;
-  border: 1px solid transparent;
-  border-radius: 0.75rem;
+  padding: 0.95rem 1.25rem;
+  border: 2px solid transparent;
+  border-radius: var(--radius-pill);
   font: inherit;
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.05em;
   text-align: center;
   text-decoration: none;
   cursor: pointer;
+  transition:
+    transform 0.08s ease,
+    box-shadow 0.08s ease;
 }
 
 .button + .button {
-  margin-top: 0.5rem;
+  margin-top: 0.75rem;
 }
 
 .button--primary {
   background: var(--accent);
   color: var(--accent-text);
+  box-shadow: 0 4px 0 var(--accent-shadow);
+}
+
+.button--primary:active:not(:disabled) {
+  transform: translateY(4px);
+  box-shadow: none;
 }
 
 .button--ghost {
   background: var(--surface);
   color: var(--text);
   border-color: var(--border);
+  box-shadow: 0 4px 0 var(--border);
+}
+
+.button--ghost:active:not(:disabled) {
+  transform: translateY(4px);
+  box-shadow: none;
+}
+
+/* The playful one: yellow fill, black border and a black drop. */
+.button--pop {
+  background: var(--yellow);
+  color: #212121;
+  border-color: #212121;
+  box-shadow: 0 6px 0 #212121;
+}
+
+.button--pop:active:not(:disabled) {
+  transform: translateY(6px);
+  box-shadow: none;
 }
 
 .button:disabled {
-  opacity: 0.5;
+  opacity: 0.45;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 .chip {
-  padding: 0.4rem 0.9rem;
-  border: 1px solid var(--border);
-  border-radius: 999px;
+  padding: 0.45rem 1rem;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-pill);
   background: var(--surface);
   color: var(--muted);
   font: inherit;
   font-size: 0.85rem;
+  font-weight: 700;
   cursor: pointer;
 }
 
 .chip--on {
-  background: var(--hard-bg);
-  border-color: var(--hard);
-  color: var(--hard);
-  font-weight: 700;
+  background: var(--yellow);
+  border-color: #212121;
+  color: #212121;
 }
 
 /* --- card list ------------------------------------------------------ */
@@ -214,16 +328,22 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
-  padding: 0.9rem 1rem;
+  padding: 1rem 1.1rem;
   background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 0.9rem;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-card);
   text-decoration: none;
   color: inherit;
+  transition:
+    transform 0.1s ease,
+    box-shadow 0.1s ease,
+    border-color 0.1s ease;
 }
 
 .card:hover {
-  border-color: var(--accent);
+  border-color: var(--hover-line);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 0 var(--hover-line);
 }
 
 .card__main {
@@ -250,11 +370,12 @@ body {
 }
 
 .tag {
-  padding: 0.15rem 0.55rem;
-  border-radius: 999px;
-  background: var(--bg);
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-pill);
+  background: var(--surface-sunken);
   border: 1px solid var(--border);
   font-size: 0.72rem;
+  font-weight: 700;
   color: var(--muted);
   white-space: nowrap;
 }
@@ -275,9 +396,16 @@ body {
 
 /* --- practice ------------------------------------------------------- */
 .practice__phrase {
-  margin: 1rem 0 0.75rem;
+  margin: 1rem 0 1.25rem;
   font-size: 1.6rem;
-  line-height: 1.35;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+/* Highlighter stroke, a Timee signature. Applied to an inline span so the
+   heading keeps its block margins. */
+.practice__phrase span {
+  background: linear-gradient(transparent 64%, var(--yellow-soft) 64%);
 }
 
 .stepper {
@@ -296,14 +424,14 @@ body {
 }
 
 .stepper__dot--on {
-  background: var(--accent);
+  background: var(--yellow);
 }
 
 .step {
   background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 1rem;
-  padding: 1.1rem;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 1.2rem;
   min-height: 12rem;
 }
 
@@ -330,7 +458,7 @@ body {
 
 .answer__text {
   margin: 0 0 0.6rem;
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: var(--accent);
 }
@@ -366,11 +494,11 @@ body {
 
 .examples__play {
   flex: none;
-  width: 2.2rem;
-  height: 2.2rem;
+  width: 2.3rem;
+  height: 2.3rem;
   border-radius: 50%;
-  border: 1px solid var(--border);
-  background: var(--bg);
+  border: 2px solid var(--border);
+  background: var(--yellow);
   cursor: pointer;
   font-size: 0.9rem;
 }
@@ -477,11 +605,15 @@ body {
 
 .shell__badge {
   margin: 0;
-  font-size: 0.72rem;
+  font-size: 0.78rem;
   font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--accent);
+  letter-spacing: 0.08em;
+  color: #212121;
+  background: var(--yellow);
+  display: inline-block;
+  padding: 0.25rem 0.7rem;
+  border-radius: var(--radius-pill);
+  border: 2px solid #212121;
 }
 
 .shell__tagline {
@@ -491,30 +623,47 @@ body {
 }
 
 .shell__nav {
-  display: grid;
-  gap: 0.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  /* Takes the leftover height, but items keep their own size. */
   flex: 1;
+  align-content: start;
 }
 
 .shell__navlink {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  padding: 0.6rem 0.7rem;
-  border-radius: 0.6rem;
+  flex: none;
+  padding: 0.6rem 0.9rem;
+  border: 2px solid transparent;
+  border-radius: var(--radius-pill);
   color: var(--text);
   text-decoration: none;
   font-size: 0.92rem;
-}
-
-.shell__navlink:hover {
-  background: var(--bg);
-}
-
-.shell__navlink--active {
-  background: var(--accent);
-  color: var(--accent-text);
   font-weight: 700;
+}
+
+ /* Only inactive items take the hover fill; the active pill keeps its
+    yellow, which a plain :hover would otherwise paint over and leave dark
+    text on a dark surface. */
+.shell__navlink:not(.shell__navlink--active):hover {
+  background: var(--hover-surface);
+}
+
+/* Outlined rather than filled: the tint marks the section without turning
+   the sidebar into a block of colour. */
+.shell__navlink--active,
+.shell__navlink--active:hover {
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-weight: 700;
+  border: 2px solid var(--blue);
+}
+
+.shell__navlink--active:hover {
+  filter: brightness(1.04);
 }
 
 .shell__navicon {
@@ -527,6 +676,13 @@ body {
 }
 
 .shell__main {
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.shell__main > * {
+  flex: 1;
   min-width: 0;
 }
 
@@ -551,7 +707,7 @@ body {
 }
 
 .usermenu__trigger:hover {
-  background: var(--bg);
+  background: var(--hover-surface);
 }
 
 .usermenu__avatar {
@@ -613,7 +769,7 @@ body {
 }
 
 .usermenu__item:hover {
-  background: var(--bg);
+  background: var(--hover-surface);
 }
 
 .usermenu__item:disabled {
@@ -634,8 +790,9 @@ body {
 }
 
 .page-head__title {
-  margin: 0;
-  font-size: 1.4rem;
+  margin: 0 0 0.4rem;
+  font-size: 1.85rem;
+  font-weight: 800;
 }
 
 /* --- desktop: sidebar becomes permanent ----------------------------- */
@@ -656,4 +813,438 @@ body {
     height: 100dvh;
     transform: none;
   }
+}
+
+/* --- display type ---------------------------------------------------- */
+.page-head__title,
+.practice__phrase,
+.step__title,
+.login__title,
+.card__phrase,
+.answer__text,
+.done,
+.shell__brand,
+.shell__badge,
+.button,
+.chip,
+.prompt {
+  font-family: var(--font-display);
+}
+
+/* The rounded face reads slightly lighter, so headings take the heavier cut. */
+.page-head__title,
+.practice__phrase,
+.login__title {
+  font-weight: 800;
+}
+
+/* --- banner + progress ------------------------------------------------ */
+.banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.1rem 1.35rem;
+  margin-bottom: 1rem;
+  border-radius: var(--radius-card);
+  background: var(--blue);
+  color: #fff;
+  box-shadow: 0 5px 0 var(--blue-deep);
+}
+
+.banner__eyebrow {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  opacity: 0.85;
+}
+
+.banner__title {
+  margin: 0.15rem 0 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.35rem;
+}
+
+.banner__streak {
+  flex: none;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  padding: 0.35rem 0.8rem;
+  border-radius: var(--radius-pill);
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.banner__streak strong {
+  font-size: 1.3rem;
+}
+
+.hud {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-bottom: 1.5rem;
+}
+
+.hud__bar {
+  flex: 1;
+  height: 1rem;
+  border-radius: var(--radius-pill);
+  background: var(--surface-sunken);
+  border: 2px solid var(--border);
+  overflow: hidden;
+}
+
+.hud__fill {
+  display: block;
+  height: 100%;
+  background: var(--yellow);
+  border-radius: var(--radius-pill);
+  transition: width 0.35s ease;
+}
+
+.hud__progress {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--muted);
+}
+
+/* --- the daily path --------------------------------------------------- */
+.path {
+  list-style: none;
+  margin: 2rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 1.1rem;
+}
+
+.path__step {
+  display: flex;
+  align-items: center;
+  gap: 1.35rem;
+  position: relative;
+}
+
+/* The connecting line between nodes. */
+.path__step:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  left: 2.65rem;
+  top: 5.3rem;
+  bottom: -1.4rem;
+  width: 5px;
+  background: var(--border);
+  border-radius: 3px;
+  transform: translateX(-50%);
+}
+
+.path__step--done:not(:last-child)::before {
+  background: var(--yellow);
+}
+
+.path__node {
+  flex: none;
+  width: 5.3rem;
+  height: 5.3rem;
+  display: grid;
+  place-items: center;
+  line-height: 0;
+  border-radius: 50%;
+  border: 0;
+  background: var(--surface-sunken);
+  color: var(--muted);
+  font-size: 2rem;
+  text-decoration: none;
+  /* A thick bottom shadow reads as depth, and the inset highlight gives the
+     dome its top light — that is what makes it look pressable. */
+  box-shadow:
+    0 6px 0 var(--border),
+    inset 0 3px 0 rgba(255, 255, 255, 0.28);
+  transition:
+    transform 0.08s ease,
+    box-shadow 0.08s ease;
+  z-index: 1;
+}
+
+.path__step--done .path__node {
+  background: var(--yellow);
+  color: #4a3a00;
+  box-shadow:
+    0 6px 0 var(--yellow-deep),
+    inset 0 3px 0 rgba(255, 255, 255, 0.45);
+}
+
+/* The next one to do: bigger, blue, and gently bobbing. */
+.path__step--current .path__node {
+  width: 6rem;
+  height: 6rem;
+  font-size: 2.3rem;
+  background: var(--blue);
+  color: #fff;
+  box-shadow:
+    0 7px 0 var(--blue-deep),
+    inset 0 3px 0 rgba(255, 255, 255, 0.3);
+  animation: path-bob 1.6s ease-in-out infinite;
+}
+
+/* Review nodes get the review colour, so the list reads at a glance. */
+.path__step--review:not(.path__step--done):not(.path__step--current)
+  .path__node {
+  background: var(--orange-soft);
+  color: var(--orange-deep);
+  box-shadow:
+    0 6px 0 var(--orange),
+    inset 0 3px 0 rgba(255, 255, 255, 0.3);
+}
+
+.path__node:active {
+  transform: translateY(6px);
+  box-shadow: none;
+}
+
+@keyframes path-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .path__step--current .path__node {
+    animation: none;
+  }
+}
+
+.path__label {
+  min-width: 0;
+}
+
+.path__phrase {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.3rem;
+}
+
+.path__step--done .path__phrase {
+  color: var(--muted);
+}
+
+.path__cta {
+  margin: 0.2rem 0 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* --- finished / celebrate -------------------------------------------- */
+.finished,
+.celebrate {
+  text-align: center;
+  padding: 1.5rem 1rem;
+}
+
+.finished__emoji,
+.celebrate__emoji {
+  margin: 0;
+  font-size: 3rem;
+  animation: pop-in 0.45s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+}
+
+.finished__title {
+  margin: 0.4rem 0 0.2rem;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.5rem;
+}
+
+.celebrate__streak {
+  margin: 0.3rem 0 1rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+@keyframes pop-in {
+  from {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .finished__emoji,
+  .celebrate__emoji {
+    animation: none;
+  }
+}
+
+/* --- review ----------------------------------------------------------- */
+.review-group {
+  margin-top: 1.5rem;
+}
+
+.review-group__title {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0 0 0.5rem;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+}
+
+.review-group__count {
+  margin-left: auto;
+  padding: 0.1rem 0.6rem;
+  border-radius: var(--radius-pill);
+  background: var(--surface-sunken);
+  border: 1px solid var(--border);
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.path__icon {
+  display: block;
+}
+
+/* --- two-column today ------------------------------------------------- */
+.today {
+  display: grid;
+  gap: 1.5rem;
+  max-width: 62rem;
+  margin: 0 auto;
+  padding: max(1.5rem, env(safe-area-inset-top, 0px)) 1.25rem
+    calc(3rem + env(safe-area-inset-bottom, 0px));
+}
+
+.today__main {
+  min-width: 0;
+}
+
+.rail {
+  display: grid;
+  gap: 1rem;
+  align-content: start;
+}
+
+.rail__card {
+  padding: 1.1rem 1.2rem;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-card);
+}
+
+.rail__title {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-display);
+  font-size: 1rem;
+}
+
+.rail__big {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.8rem;
+  color: var(--orange);
+}
+
+.rail__note {
+  margin: 0.35rem 0 0.75rem;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.rail .button {
+  padding: 0.6rem 1rem;
+  font-size: 0.9rem;
+}
+
+/* --- week strip ------------------------------------------------------- */
+.week {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
+}
+
+.week__day {
+  display: grid;
+  justify-items: center;
+  gap: 0.35rem;
+}
+
+.week__label {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.week__dot {
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  background: var(--surface-sunken);
+  border: 2px solid var(--border);
+}
+
+.week__day--done .week__dot {
+  background: var(--yellow);
+  border-color: var(--yellow-deep);
+}
+
+.week__day--today .week__label {
+  color: var(--blue);
+  font-weight: 700;
+}
+
+.week__day--today .week__dot {
+  border-color: var(--blue);
+}
+
+/* Wide screens get the rail beside the path instead of under it. */
+@media (min-width: 64rem) {
+  .today {
+    grid-template-columns: minmax(0, 1fr) 17rem;
+    align-items: start;
+  }
+}
+
+/* --- result buttons --------------------------------------------------- */
+/* Colour carries the meaning: green for "got it", orange for "struggled". */
+.button--success {
+  background: var(--green);
+  color: #fff;
+  box-shadow: 0 5px 0 var(--green-deep);
+}
+
+.button--success:active:not(:disabled) {
+  transform: translateY(5px);
+  box-shadow: none;
+}
+
+.button--warn {
+  background: var(--orange-soft);
+  color: var(--orange-deep);
+  border-color: var(--orange);
+  box-shadow: 0 5px 0 var(--orange);
+}
+
+.button--warn:active:not(:disabled) {
+  transform: translateY(5px);
+  box-shadow: none;
+}
+
+.tag--hard,
+.review-group__count {
+  color: var(--orange-deep);
 }

@@ -22,6 +22,30 @@ export type ChunkProgress = {
   lastCompletedAt: string | null;
 };
 
+/** What the learner reported after practising a chunk. */
+export type DrillResult = "got_it" | "struggled";
+
+export type Streak = {
+  current: number;
+  longest: number;
+  practicedToday: boolean;
+};
+
+/** Today's queue plus the streak header. */
+export type DailySession = {
+  chunks: Chunk[];
+  /** Completed today, out of `total`. */
+  doneCount: number;
+  total: number;
+  streak: Streak;
+};
+
+export type ReviewGroup = {
+  key: "struggled" | "hard";
+  label: string;
+  chunks: Chunk[];
+};
+
 export type Chunk = {
   id: string;
   phrase: string;
@@ -34,6 +58,8 @@ export type Chunk = {
   drills: ChunkDrill[];
   progress: ChunkProgress | null;
   isHard: boolean;
+  /** True when the latest reported result was "struggled". */
+  needsReview: boolean;
 };
 
 export type Me = {

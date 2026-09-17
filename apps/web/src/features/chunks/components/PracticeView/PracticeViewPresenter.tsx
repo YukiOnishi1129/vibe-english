@@ -63,7 +63,8 @@ export type PracticeViewPresenterProps = {
   errorMessage: string | null;
   onSpeak: (text: string, rate?: number) => void;
   onToggleHard: () => void;
-  onComplete: () => void;
+  onFinish: (result: "got_it" | "struggled") => void;
+  streakAfter: number | null;
   onNext: () => void;
   onBack: () => void;
   onLeave: () => void;
@@ -82,7 +83,8 @@ export function PracticeViewPresenter({
   errorMessage,
   onSpeak,
   onToggleHard,
-  onComplete,
+  onFinish,
+  streakAfter,
   onNext,
   onBack,
   onLeave,
@@ -107,7 +109,9 @@ export function PracticeViewPresenter({
         </button>
       </header>
 
-      <h1 className="practice__phrase">{chunk.phrase}</h1>
+      <h1 className="practice__phrase">
+        <span>{chunk.phrase}</span>
+      </h1>
 
       <ol className="stepper" aria-label="練習ステップ">
         {steps.map((label, index) => (
@@ -225,22 +229,36 @@ export function PracticeViewPresenter({
         {step === "完了" && (
           <div className="step__body">
             {completed ? (
-              <>
-                <p className="done">ナイス！今日のノリ、記録した。</p>
+              <div className="celebrate">
+                <p className="celebrate__emoji" aria-hidden="true">
+                  🎉
+                </p>
+                <p className="done">ナイス！記録したよ。</p>
+                {streakAfter !== null && (
+                  <p className="celebrate__streak">🔥 {streakAfter}日連続</p>
+                )}
                 <Link className="button button--primary" to="/">
-                  今日の一覧へ
+                  つづける
                 </Link>
-              </>
+              </div>
             ) : (
               <>
-                <p className="muted">お疲れさま。記録して終わろう。</p>
+                <p className="muted">口に出せた？正直でOK。</p>
                 <button
                   type="button"
-                  className="button button--primary"
-                  onClick={onComplete}
+                  className="button button--success"
+                  onClick={() => onFinish("got_it")}
                   disabled={saving}
                 >
-                  {saving ? "保存中…" : "完了にする"}
+                  {saving ? "保存中…" : "言えた 😎"}
+                </button>
+                <button
+                  type="button"
+                  className="button button--warn"
+                  onClick={() => onFinish("struggled")}
+                  disabled={saving}
+                >
+                  むずかった 😅
                 </button>
               </>
             )}

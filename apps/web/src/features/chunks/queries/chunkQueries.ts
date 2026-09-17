@@ -1,4 +1,11 @@
-import type { Chunk, ChunkProgress } from "@vibe-english/domain";
+import type {
+  Chunk,
+  ChunkProgress,
+  DailySession,
+  DrillResult,
+  ReviewGroup,
+  Streak,
+} from "@vibe-english/domain";
 import { api } from "@/shared/api";
 
 /**
@@ -12,6 +19,8 @@ export const chunkKeys = {
   /** Root key: invalidating this clears every chunk-derived cache entry. */
   all: () => ["chunks"] as const,
   today: () => [...chunkKeys.all(), "today"] as const,
+  session: () => [...chunkKeys.all(), "session"] as const,
+  review: () => [...chunkKeys.all(), "review"] as const,
   detail: (chunkId: string) => [...chunkKeys.all(), "detail", chunkId] as const,
   hard: () => [...chunkKeys.all(), "hard"] as const,
 } as const;
@@ -23,6 +32,22 @@ export const todayChunksQuery = () => ({
   queryKey: chunkKeys.today(),
   queryFn: (): Promise<Chunk[]> => api.getTodayChunks(),
 });
+
+export const dailySessionQuery = () => ({
+  queryKey: chunkKeys.session(),
+  queryFn: (): Promise<DailySession> => api.getDailySession(),
+});
+
+export const reviewGroupsQuery = () => ({
+  queryKey: chunkKeys.review(),
+  queryFn: (): Promise<ReviewGroup[]> => api.getReviewGroups(),
+});
+
+export const finishChunkRequest = (
+  chunkId: string,
+  result: DrillResult,
+): Promise<{ progress: ChunkProgress; streak: Streak }> =>
+  api.finishChunk(chunkId, result);
 
 export const chunkDetailQuery = (chunkId: string) => ({
   queryKey: chunkKeys.detail(chunkId),
