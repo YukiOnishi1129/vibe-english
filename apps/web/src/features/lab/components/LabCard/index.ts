@@ -1,0 +1,1 @@
+export { LabCard } from "./LabCard";
