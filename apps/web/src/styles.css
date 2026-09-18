@@ -5,30 +5,30 @@
      blue   = the next action (current node, CTAs)
      green  = "got it"
      orange = review / "struggled" */
-  --yellow: #ffd45e;
-  --yellow-soft: #fff1c9;
+  --yellow: #f2c85c;
+  --yellow-soft: #f8ecc8;
   --yellow-deep: #d9a92e;
-  --blue: #3d8bf0;
+  --blue: #4685dd;
   --blue-deep: #2a6dc4;
-  --blue-soft: #e8f1fd;
+  --blue-soft: #e3ecf7;
   --green: #4aab7d;
   --green-deep: #35845f;
-  --green-soft: #e2f2ea;
+  --green-soft: #dfeee6;
   --orange: #e8955a;
   --orange-deep: #b96f3b;
-  --orange-soft: #fdeee1;
+  --orange-soft: #f8e8d9;
   --red: #dd6a62;
 
   /* Paper, not screen: Japanese lifestyle brands (akomeya, baum, ayura) all
      avoid pure white ground and pure black text. Cards sit a shade lighter
      than the page so they lift without a hard edge. */
-  --bg: #f7f4ee;
-  --surface: #fdfcf9;
-  --surface-sunken: #efebe2;
-  --text: #43403b;
-  --muted: #8b8479;
-  --border: #e2ddd2;
-  --border-strong: #43403b;
+  --bg: #f3efe7;
+  --surface: #f9f6f0;
+  --surface-sunken: #eae5da;
+  --text: #4a4740;
+  --muted: #8e877b;
+  --border: #ddd7ca;
+  --border-strong: #4a4740;
 
   --accent: var(--blue);
   --accent-text: #ffffff;
@@ -44,7 +44,7 @@
   --radius-card: 1.25rem;
 
   /* Hover fill and the accent used for hovered outlines. */
-  --hover-surface: #f0ebe2;
+  --hover-surface: #e9e3d8;
   --hover-line: #2e2a26;
 
   /* Foreground for text and outlines sitting ON a brand colour fill. These
@@ -64,55 +64,9 @@
 
 /* Timee itself ships light-only; this dark set keeps the same yellow/blue
    roles at brightness levels that survive a dark surface. */
-/* The dark palette lives in one place and is applied two ways: by the OS
-   preference, and by an explicit choice stored on the document root. The
-   explicit choice wins, so a user who prefers light during the day can keep
-   it even when their system flips to dark. */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --yellow: #f0c765;
-    --yellow-soft: #3f3c22;
-    --yellow-deep: #b08f34;
-    --blue: #6aa5e8;
-    --blue-deep: #3d6fa8;
-    --blue-soft: #1f303a;
-    --green: #5cba8d;
-    --green-deep: #34795a;
-    --green-soft: #1d3328;
-    --orange: #e0a173;
-    --orange-deep: #a8703f;
-    --orange-soft: #392f22;
-    --red: #e08b84;
-
-    /* Night in a forest rather than a switched-off screen: a green-leaning
-       charcoal keeps the calm, outdoors feel after dark. */
-    --bg: #171d19;
-    --surface: #1f2723;
-    --surface-sunken: #26302b;
-    --text: #e8ece7;
-    --muted: #9aa69d;
-    --border: #35403a;
-    --border-strong: #e8ece7;
-
-    --accent: var(--blue);
-    --accent-text: #0e1013;
-    --accent-shadow: var(--blue-deep);
-
-    --hard: var(--yellow);
-    --hard-bg: #40360d;
-    --done: #63d9a0;
-    --done-bg: #123d2e;
-    --error: #ff8078;
-
-    /* Lighter than the surface so hover reads as raised, and a muted gold
-       outline instead of full-strength yellow, which glares on dark. */
-    --hover-surface: #2d3832;
-    --hover-line: #b08f34;
-
-    color-scheme: dark;
-  }
-}
-
+/* The theme is always set explicitly on the root by useTheme: "auto" resolves
+   to light or dark by the clock, so there is no prefers-color-scheme rule —
+   the OS setting would otherwise fight the user's own choice. */
 :root[data-theme="dark"] {
   --yellow: #f0c765;
   --yellow-soft: #3f3c22;

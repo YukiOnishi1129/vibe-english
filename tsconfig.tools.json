@@ -13,7 +13,8 @@
     "scripts",
     "tests",
     "apps/web/vite.config.ts",
-    "apps/web/src/features/**/utils/**/*.ts"
+    "apps/web/src/features/**/utils/**/*.ts",
+    "apps/web/src/shared/utils/**/*.ts"
   ],
   "references": [
     { "path": "./packages/content" },

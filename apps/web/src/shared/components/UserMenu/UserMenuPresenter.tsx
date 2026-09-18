@@ -5,7 +5,7 @@ import type { ThemeChoice } from "@/shared/hooks/useTheme";
 const THEME_OPTIONS: { value: ThemeChoice; label: string }[] = [
   { value: "light", label: "昼" },
   { value: "dark", label: "夜" },
-  { value: "system", label: "自動" },
+  { value: "auto", label: "自動" },
 ];
 
 // Presentational only: props in, JSX out.
@@ -75,7 +75,7 @@ export function UserMenuPresenter({
       {open && (
         <div className="usermenu__popover" role="menu">
           <div className="themepick">
-            <p className="themepick__label">見た目</p>
+            <p className="themepick__label">見た目（自動は時間帯で切替）</p>
             <div className="themepick__options" role="group" aria-label="見た目">
               {THEME_OPTIONS.map((option) => (
                 <button

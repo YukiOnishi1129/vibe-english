@@ -14,26 +14,29 @@ export async function findStreak(trx: Trx, userId: string) {
 /**
  * Records practice for today and rolls the streak forward.
  *
- * The decision is made in SQL against the database's own current_date, so two
- * requests on the same day cannot double-count, and a client with a wrong
- * clock cannot inflate the streak.
+ * `today` is the learner's own calendar day, passed in rather than taken from
+ * the database: the server runs in UTC, so after 09:00 UTC a user in Japan is
+ * already on the next date and `current_date` would credit the wrong day.
+ *
+ * The comparison still happens in SQL, so two requests on the same day cannot
+ * double-count.
  */
-export async function touchStreak(trx: Trx, userId: string) {
+export async function touchStreak(trx: Trx, userId: string, today: string) {
   return trx
     .insertInto("user_streaks")
     .values({
       user_id: userId,
       current_streak: 1,
       longest_streak: 1,
-      last_practiced_on: sql<Date>`current_date`,
+      last_practiced_on: sql<Date>`${today}::date`,
     })
     .onConflict((oc) =>
       oc.column("user_id").doUpdateSet({
         current_streak: sql<number>`
           CASE
-            WHEN user_streaks.last_practiced_on = current_date
+            WHEN user_streaks.last_practiced_on = ${today}::date
               THEN user_streaks.current_streak
-            WHEN user_streaks.last_practiced_on = current_date - 1
+            WHEN user_streaks.last_practiced_on = ${today}::date - 1
               THEN user_streaks.current_streak + 1
             ELSE 1
           END`,
@@ -41,13 +44,13 @@ export async function touchStreak(trx: Trx, userId: string) {
           GREATEST(
             user_streaks.longest_streak,
             CASE
-              WHEN user_streaks.last_practiced_on = current_date
+              WHEN user_streaks.last_practiced_on = ${today}::date
                 THEN user_streaks.current_streak
-              WHEN user_streaks.last_practiced_on = current_date - 1
+              WHEN user_streaks.last_practiced_on = ${today}::date - 1
                 THEN user_streaks.current_streak + 1
               ELSE 1
             END)`,
-        last_practiced_on: sql<Date>`current_date`,
+        last_practiced_on: sql<Date>`${today}::date`,
         updated_at: sql<Date>`now()`,
       }),
     )

@@ -285,7 +285,7 @@ export async function finishChunk(
 
     await drillResultRepo.recordResult(trx, userId, chunkId, result);
     const progressRow = await progressRepo.upsertCompletion(trx, userId, chunkId);
-    const streakRow = await streakRepo.touchStreak(trx, userId);
+    const streakRow = await streakRepo.touchStreak(trx, userId, localToday());
 
     return {
       progress: toProgress(progressRow)!,
