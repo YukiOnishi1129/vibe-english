@@ -15,6 +15,8 @@ export type ParsedDrill = {
 
 export type ParsedChunk = {
   id: string;
+  /** Course unit this chunk belongs to; null for the everyday pool. */
+  unitId: string | null;
   phrase: string;
   meaningJa: string;
   situation: string;
@@ -170,6 +172,7 @@ export function parseChunkMarkdown(source: string, file = "chunk"): ParsedChunk 
 
   return {
     id,
+    unitId: typeof data.unit === "string" ? data.unit.trim() : null,
     phrase,
     meaningJa: requireSection(sections, SECTION.meaning, file),
     situation: requireSection(sections, SECTION.situation, file),

@@ -6,6 +6,7 @@ import type { AppContext } from "./context";
 import { meRoutes } from "./routes/me";
 import { chunkRoutes } from "./routes/chunks";
 import { flagRoutes, reviewRoutes } from "./routes/flags";
+import { courseRoutes } from "./routes/courses";
 
 const app = new Hono<AppContext>();
 
@@ -37,6 +38,7 @@ app.route("/api/me", meRoutes);
 app.route("/api/chunks", chunkRoutes);
 app.route("/api/flags", flagRoutes);
 app.route("/api/review", reviewRoutes);
+app.route("/api/courses", courseRoutes);
 
 app.notFound((c) =>
   c.req.path.startsWith("/api/")

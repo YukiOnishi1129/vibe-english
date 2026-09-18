@@ -40,6 +40,35 @@ export type DailySession = {
   streak: Streak;
 };
 
+export type CourseSummary = {
+  id: string;
+  title: string;
+  description: string | null;
+  /** Completed chunks out of the course total. */
+  doneCount: number;
+  total: number;
+  isSelected: boolean;
+};
+
+export type CourseUnit = {
+  id: string;
+  title: string;
+  description: string | null;
+  chunks: Chunk[];
+  doneCount: number;
+};
+
+export type CourseDetail = {
+  id: string;
+  title: string;
+  description: string | null;
+  units: CourseUnit[];
+  doneCount: number;
+  total: number;
+  /** The next unfinished chunk — what "つづきから" opens. */
+  nextChunkId: string | null;
+};
+
 export type ReviewGroup = {
   key: "struggled" | "hard";
   label: string;

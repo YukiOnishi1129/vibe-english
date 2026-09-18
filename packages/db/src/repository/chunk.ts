@@ -3,6 +3,13 @@ import type { Trx } from "../withUserTransaction";
 // Repositories receive a transaction and only run queries. Transaction
 // boundaries belong to the usecase layer.
 
+/**
+ * The everyday pool that today's lesson draws from.
+ *
+ * Chunks belonging to a course unit are excluded: those are worked through in
+ * order under おさらい, and mixing them into the daily shuffle would break
+ * both the ordering and the sense of covering a topic.
+ */
 export async function listActiveChunks(trx: Trx) {
   return trx
     .selectFrom("chunks")
@@ -16,6 +23,7 @@ export async function listActiveChunks(trx: Trx) {
       "sort_order",
     ])
     .where("is_active", "=", true)
+    .where("unit_id", "is", null)
     .orderBy("sort_order", "asc")
     .orderBy("id", "asc")
     .execute();

@@ -2,6 +2,9 @@ export type {
   Chunk,
   DailySession,
   DrillResult,
+  CourseDetail,
+  CourseSummary,
+  CourseUnit,
   ReviewGroup,
   Streak,
   ChunkDrill,
@@ -17,6 +20,13 @@ export {
   getReviewGroups,
   finishChunk,
   getTodayChunks,
+} from "./chunk-usecase";
+export {
+  getCourses,
+  getCourseDetail,
+  chooseCourse,
+} from "./course-usecase";
+export {
   getChunk,
   getHardChunks,
   completeChunk,

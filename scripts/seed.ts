@@ -11,9 +11,11 @@ import pg from "pg";
 import { config } from "dotenv";
 import {
   loadChunksFromDir,
+  loadCoursesFromDir,
   exampleId,
   drillId,
   type ParsedChunk,
+  type ParsedCourse,
 } from "@vibe-english/content";
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -31,10 +33,46 @@ if (!connectionString) {
   process.exit(1);
 }
 
+async function seedCourse(client: pg.PoolClient, course: ParsedCourse) {
+  await client.query(
+    `INSERT INTO courses (id, title, description, sort_order, is_active, updated_at)
+     VALUES ($1, $2, $3, $4, true, now())
+     ON CONFLICT (id) DO UPDATE SET
+       title = EXCLUDED.title,
+       description = EXCLUDED.description,
+       sort_order = EXCLUDED.sort_order,
+       is_active = true,
+       updated_at = now()`,
+    [course.id, course.title, course.description, course.sortOrder],
+  );
+
+  const unitIds: string[] = [];
+  for (const unit of course.units) {
+    unitIds.push(unit.id);
+    await client.query(
+      `INSERT INTO course_units (id, course_id, title, description, sort_order)
+       VALUES ($1, $2, $3, $4, $5)
+       ON CONFLICT (id) DO UPDATE SET
+         course_id = EXCLUDED.course_id,
+         title = EXCLUDED.title,
+         description = EXCLUDED.description,
+         sort_order = EXCLUDED.sort_order`,
+      [unit.id, course.id, unit.title, unit.description, unit.sortOrder],
+    );
+  }
+
+  // Units removed from the Markdown are dropped; their chunks fall back to the
+  // everyday pool rather than disappearing (ON DELETE SET NULL).
+  await client.query(
+    `DELETE FROM course_units WHERE course_id = $1 AND NOT (id = ANY($2::text[]))`,
+    [course.id, unitIds],
+  );
+}
+
 async function seedChunk(client: pg.PoolClient, chunk: ParsedChunk) {
   await client.query(
-    `INSERT INTO chunks (id, phrase, meaning_ja, situation, nuance, level, sort_order, is_active, updated_at)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, true, now())
+    `INSERT INTO chunks (id, phrase, meaning_ja, situation, nuance, level, sort_order, unit_id, is_active, updated_at)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, true, now())
      ON CONFLICT (id) DO UPDATE SET
        phrase = EXCLUDED.phrase,
        meaning_ja = EXCLUDED.meaning_ja,
@@ -42,6 +80,7 @@ async function seedChunk(client: pg.PoolClient, chunk: ParsedChunk) {
        nuance = EXCLUDED.nuance,
        level = EXCLUDED.level,
        sort_order = EXCLUDED.sort_order,
+       unit_id = EXCLUDED.unit_id,
        is_active = true,
        updated_at = now()`,
     [
@@ -52,6 +91,7 @@ async function seedChunk(client: pg.PoolClient, chunk: ParsedChunk) {
       chunk.nuance,
       chunk.level,
       chunk.sortOrder,
+      chunk.unitId,
     ],
   );
 
@@ -98,7 +138,11 @@ async function seedChunk(client: pg.PoolClient, chunk: ParsedChunk) {
 
 async function main() {
   const contentDir = path.join(rootDir, "content", "chunks");
-  const chunks = await loadChunksFromDir(contentDir);
+  const coursesDir = path.join(rootDir, "content", "courses");
+  const [chunks, courses] = await Promise.all([
+    loadChunksFromDir(contentDir),
+    loadCoursesFromDir(coursesDir),
+  ]);
 
   if (chunks.length === 0) {
     console.error(`No Markdown files found in ${contentDir}`);
@@ -110,6 +154,11 @@ async function main() {
 
   try {
     await client.query("BEGIN");
+
+    // Courses first: chunks reference their units.
+    for (const course of courses) {
+      await seedCourse(client, course);
+    }
 
     for (const chunk of chunks) {
       await seedChunk(client, chunk);
@@ -126,6 +175,10 @@ async function main() {
     await client.query("COMMIT");
 
     console.log(`Seeded ${chunks.length} chunks from ${contentDir}`);
+    if (courses.length > 0) {
+      const units = courses.reduce((n, course) => n + course.units.length, 0);
+      console.log(`Seeded ${courses.length} course(s), ${units} unit(s)`);
+    }
     if (rowCount) console.log(`Deactivated ${rowCount} removed chunk(s)`);
   } catch (error) {
     await client.query("ROLLBACK");

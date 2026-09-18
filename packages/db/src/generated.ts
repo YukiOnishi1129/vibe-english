@@ -56,7 +56,26 @@ export interface Chunks {
   phrase: string;
   situation: string;
   sort_order: Generated<number>;
+  unit_id: string | null;
   updated_at: Generated<Timestamp>;
+}
+
+export interface Courses {
+  created_at: Generated<Timestamp>;
+  description: string | null;
+  id: string;
+  is_active: Generated<boolean>;
+  sort_order: Generated<number>;
+  title: string;
+  updated_at: Generated<Timestamp>;
+}
+
+export interface CourseUnits {
+  course_id: string;
+  description: string | null;
+  id: string;
+  sort_order: Generated<number>;
+  title: string;
 }
 
 export interface SchemaMigrations {
@@ -83,6 +102,13 @@ export interface User {
   image: string | null;
   name: string;
   updatedAt: Generated<Timestamp>;
+}
+
+export interface UserCourses {
+  course_id: string;
+  started_at: Generated<Timestamp>;
+  updated_at: Generated<Timestamp>;
+  user_id: string;
 }
 
 export interface UserDrillResults {
@@ -131,9 +157,12 @@ export interface DB {
   chunk_drills: ChunkDrills;
   chunk_examples: ChunkExamples;
   chunks: Chunks;
+  course_units: CourseUnits;
+  courses: Courses;
   schema_migrations: SchemaMigrations;
   session: Session;
   user: User;
+  user_courses: UserCourses;
   user_drill_results: UserDrillResults;
   user_flags: UserFlags;
   user_progress: UserProgress;

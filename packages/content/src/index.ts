@@ -6,4 +6,9 @@ export {
   type ParsedDrill,
   type ParsedExample,
 } from "./parse";
-export { loadChunksFromDir } from "./load";
+export { loadChunksFromDir, loadCoursesFromDir } from "./load";
+export {
+  parseCourseMarkdown,
+  type ParsedCourse,
+  type ParsedUnit,
+} from "./parseCourse";
