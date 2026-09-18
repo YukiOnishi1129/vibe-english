@@ -27,8 +27,8 @@ More coffee? I'm ___, thanks.
 answer: good
 
 ## 日本語から
-今のところ大丈夫です。
-answer: I'm good for now.
+コーヒーおかわり？大丈夫です、ありがとう。
+answer: More coffee? I'm good, thanks.
 
 ## 内部メモ
 「上手い」の意味とは混ぜない。断り専用として扱う。

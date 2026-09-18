@@ -27,8 +27,8 @@ Hey, how ___ your weekend?
 answer: was
 
 ## 日本語から
-週末どうだった？どこか行った？
-answer: How was your weekend? Did you go anywhere?
+やあ、週末どうだった？
+answer: Hey, how was your weekend?
 
 ## 内部メモ
 返しの How was yours? まで含めて一往復にしている。

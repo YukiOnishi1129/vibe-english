@@ -27,8 +27,8 @@ It's almost seven. Let's ___ it a day.
 answer: call
 
 ## 日本語から
-今日は切り上げて、明日続きをやろう。
-answer: Let's call it a day and pick this up tomorrow.
+もう7時近い。今日はここまでにしよう。
+answer: It's almost seven. Let's call it a day.
 
 ## 内部メモ
 最後のチャンクなので締めの語感で終わらせる。

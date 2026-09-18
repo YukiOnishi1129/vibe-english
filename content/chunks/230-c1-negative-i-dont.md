@@ -28,8 +28,8 @@ She ___ drink coffee.
 answer: doesn't
 
 ## 日本語から
-まだお腹すいてないです。
-answer: I'm not hungry yet.
+彼女はコーヒーを飲みません。
+answer: She doesn't drink coffee.
 
 ## 内部メモ
 don't / doesn't と be動詞の not を並べて違いを見せる。

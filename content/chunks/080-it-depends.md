@@ -27,8 +27,8 @@ It ___ on the budget.
 answer: depends
 
 ## 日本語から
-どれだけ時間があるか次第です。
-answer: It depends on how much time we have.
+予算次第ですね。
+answer: It depends on the budget.
 
 ## 内部メモ
 on の後ろが名詞でも節でもいい点を例文で見せる。

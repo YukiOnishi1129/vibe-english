@@ -87,8 +87,6 @@ export function LabViewPresenter({
           happen at all. */}
       <StepPicker steps={stepStatuses} onSelect={onSelectStep} />
 
-      <p className="lab__hint">{step.hint}</p>
-
       {/* No swiping here: the practice half is about settling into a rhythm,
           and a gesture that judges nothing only adds a way to slip. */}
       <div className="deck">

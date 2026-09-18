@@ -28,8 +28,8 @@ He ___ the guitar.
 answer: plays
 
 ## 日本語から
-毎週日曜にテニスをします。
-answer: I play tennis every Sunday.
+彼はギターを弾きます。
+answer: He plays the guitar.
 
 ## 内部メモ
 三単現の s を穴埋めで確認させる。

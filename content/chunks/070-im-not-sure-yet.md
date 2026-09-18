@@ -27,8 +27,8 @@ Are you joining tonight? I'm not ___ yet.
 answer: sure
 
 ## 日本語から
-まだ決めてないです、昼までに連絡します。
-answer: I'm not sure yet, I'll let you know by noon.
+今夜来る？まだわからないです。
+answer: Are you joining tonight? I'm not sure yet.
 
 ## 内部メモ
 yet を落とすと冷たく響くので、yet 込みで覚えさせる。

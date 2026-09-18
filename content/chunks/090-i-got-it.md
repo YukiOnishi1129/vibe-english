@@ -27,8 +27,8 @@ ___ it, thanks for explaining.
 answer: Got
 
 ## 日本語から
-こっちでやるから座ってて。
-answer: I got it, you sit down.
+わかりました、説明ありがとう。
+answer: Got it, thanks for explaining.
 
 ## 内部メモ
 3つ目はくだけた口語形。フォーマル指導はしない方針。

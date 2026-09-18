@@ -27,8 +27,8 @@ Friday at three? That ___.
 answer: works
 
 ## 日本語から
-私はそれで問題ないです。
-answer: That works for me.
+金曜の3時？それで大丈夫です。
+answer: Friday at three? That works.
 
 ## 内部メモ
 否定形 That doesn't work は別チャンクにする余地あり。

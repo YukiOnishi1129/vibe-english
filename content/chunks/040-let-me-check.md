@@ -27,8 +27,8 @@ Let me ___ and get back to you.
 answer: check
 
 ## 日本語から
-カレンダーを見てみます。
-answer: Let me check my calendar.
+確認して折り返します。
+answer: Let me check and get back to you.
 
 ## 内部メモ
 返答を保留する系のチャンク。I'll get back to you と近いので重複注意。

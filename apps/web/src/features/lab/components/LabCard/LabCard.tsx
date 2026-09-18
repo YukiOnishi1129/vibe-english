@@ -24,9 +24,22 @@ export function LabCard({ card, onSpeak }: LabCardProps) {
 
   const example = card.chunk.examples[0];
 
+  // The blank and the spoken drill are written from the same sentence, so the
+  // spoken prompt is that sentence's Japanese. examples[0] only coincides with
+  // it sometimes, which would show the wrong gloss for the blank.
+  const blankGloss =
+    card.chunk.drills.find((drill) => drill.type === "translate")?.prompt ??
+    example?.japanese ??
+    null;
+  const blankSentence =
+    card.chunk.drills.find((drill) => drill.type === "translate")?.answer ??
+    example?.english ??
+    null;
+
   if (card.kind === "meaning") {
     return (
       <div className="pcard__body">
+        <p className="labcard__task">こんな意味のフレーズ</p>
         <p className="pcard__phrase">{card.chunk.phrase}</p>
         <p className="pcard__reveal">{card.chunk.meaningJa}</p>
 
@@ -43,7 +56,10 @@ export function LabCard({ card, onSpeak }: LabCardProps) {
   if (card.kind === "speak") {
     return (
       <div className="pcard__body">
+        <p className="labcard__task">聞いて、まねして言ってみよう</p>
         <p className="pcard__phrase">{card.chunk.phrase}</p>
+        {/* Saying a phrase without knowing what it means is just noise. */}
+        <p className="labcard__gloss">{card.chunk.meaningJa}</p>
         <button
           type="button"
           className="button button--primary"
@@ -72,12 +88,13 @@ export function LabCard({ card, onSpeak }: LabCardProps) {
 
     return (
       <div className="pcard__body">
+        <p className="labcard__task">空欄に入る語を書いてみよう</p>
         <p className="pcard__prompt">{drill.prompt}</p>
 
         {/* Without the Japanese the blank has several defensible answers —
             "Can I ___ a coffee?" fits get, have and order alike — so the
             meaning is shown up front rather than as a reward. */}
-        {example && <p className="labcard__gloss">{example.japanese}</p>}
+        {blankGloss && <p className="labcard__gloss">{blankGloss}</p>}
 
         <form
           className="answerbox"
@@ -122,9 +139,9 @@ export function LabCard({ card, onSpeak }: LabCardProps) {
               {correct ? "正解！ 🎉" : `答えは "${drill.answer}"`}
             </p>
 
-            {example && (
+            {blankSentence && (
               <div className="labcard__example">
-                <p className="examples__en">{example.english}</p>
+                <p className="examples__en">{blankSentence}</p>
               </div>
             )}
 
@@ -132,7 +149,7 @@ export function LabCard({ card, onSpeak }: LabCardProps) {
               <button
                 type="button"
                 className="button button--ghost pcard__listen"
-                onClick={() => onSpeak(example ? example.english : drill.answer)}
+                onClick={() => onSpeak(blankSentence ?? drill.answer)}
               >
                 🔊 通して聞く
               </button>
@@ -157,6 +174,9 @@ export function LabCard({ card, onSpeak }: LabCardProps) {
 
   return (
     <div className="pcard__body">
+      {/* The instruction belongs on the card: the step header scrolls out of
+          mind, and a lone Japanese sentence gives no clue what to do with it. */}
+      <p className="labcard__task">これ、英語で声に出してみて</p>
       <p className="pcard__prompt">{drill.prompt}</p>
 
       {!revealed ? (
@@ -165,7 +185,7 @@ export function LabCard({ card, onSpeak }: LabCardProps) {
           className="button button--ghost"
           onClick={() => setRevealed(true)}
         >
-          答えを見る
+          言えたら答え合わせ
         </button>
       ) : (
         <>

@@ -28,8 +28,8 @@ I ___ from Osaka.
 answer: am
 
 ## 日本語から
-彼女はカナダ出身です。
-answer: She's from Canada.
+大阪出身です。
+answer: I am from Osaka.
 
 ## 内部メモ
 be動詞の最初の1本。短縮形を自然に見せる。

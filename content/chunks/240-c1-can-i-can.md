@@ -28,8 +28,8 @@ She can ___ three languages.
 answer: speak
 
 ## 日本語から
-今日は行けません。
-answer: I can't come today.
+彼女は3か国語を話せます。
+answer: She can speak three languages.
 
 ## 内部メモ
 can + 原形。三単現の s がつかない点を穴埋めで。
