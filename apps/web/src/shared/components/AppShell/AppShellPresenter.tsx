@@ -41,7 +41,7 @@ export function AppShellPresenter({
         >
           ☰
         </button>
-        <span className="shell__brand">Vibe English</span>
+        <span className="shell__brand">ゆる英語</span>
       </header>
 
       <button
@@ -54,8 +54,8 @@ export function AppShellPresenter({
 
       <aside className="shell__sidebar">
         <div className="shell__sidebar-head">
-          <p className="shell__badge">Vibe English</p>
-          <p className="shell__tagline">英語を、毎日のノリに。</p>
+          <p className="shell__badge">ゆる英語</p>
+          <p className="shell__tagline">ゆるく続けられる。</p>
         </div>
 
         <nav className="shell__nav" aria-label="メインナビゲーション">

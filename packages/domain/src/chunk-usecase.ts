@@ -262,7 +262,7 @@ export async function getReviewGroups(
       },
       {
         key: "hard" as const,
-        label: "難しい",
+        label: "あとで見る",
         chunks: chunks.filter((chunk) => hardSet.has(chunk.id)),
       },
     ];

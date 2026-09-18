@@ -15,11 +15,11 @@ export function LoginViewPresenter({
     <main className="screen screen--center">
       <div className="login">
         <div className="login__hero">
-          <p className="login__badge">Vibe English</p>
+          <p className="login__badge">ゆる英語</p>
           <h1 className="login__title">
-            英語を、勉強じゃなく
+            ゆるく続けられる
             <br />
-            毎日のノリに。
+            英語。
           </h1>
         </div>
 

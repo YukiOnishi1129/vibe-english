@@ -5,27 +5,30 @@
      blue   = the next action (current node, CTAs)
      green  = "got it"
      orange = review / "struggled" */
-  --yellow: #ffd700;
-  --yellow-soft: #fff4a3;
-  --yellow-deep: #c9a500;
-  --blue: #007aff;
-  --blue-deep: #005edb;
-  --blue-soft: #e3f0ff;
-  --green: #2bb673;
-  --green-deep: #1d8a55;
-  --green-soft: #ddf5e9;
-  --orange: #f2820c;
-  --orange-deep: #c2650a;
-  --orange-soft: #ffeed9;
-  --red: #ff3b30;
+  --yellow: #ffd45e;
+  --yellow-soft: #fff1c9;
+  --yellow-deep: #d9a92e;
+  --blue: #3d8bf0;
+  --blue-deep: #2a6dc4;
+  --blue-soft: #e8f1fd;
+  --green: #4aab7d;
+  --green-deep: #35845f;
+  --green-soft: #e2f2ea;
+  --orange: #e8955a;
+  --orange-deep: #b96f3b;
+  --orange-soft: #fdeee1;
+  --red: #dd6a62;
 
-  --bg: #ffffff;
-  --surface: #ffffff;
-  --surface-sunken: #f7f7f8;
-  --text: #212121;
-  --muted: #666666;
-  --border: #dcdcdc;
-  --border-strong: #212121;
+  /* Paper, not screen: Japanese lifestyle brands (akomeya, baum, ayura) all
+     avoid pure white ground and pure black text. Cards sit a shade lighter
+     than the page so they lift without a hard edge. */
+  --bg: #f7f4ee;
+  --surface: #fdfcf9;
+  --surface-sunken: #efebe2;
+  --text: #43403b;
+  --muted: #8b8479;
+  --border: #e2ddd2;
+  --border-strong: #43403b;
 
   --accent: var(--blue);
   --accent-text: #ffffff;
@@ -38,16 +41,16 @@
   --error: #d92c20;
 
   --radius-pill: 9999px;
-  --radius-card: 1rem;
+  --radius-card: 1.25rem;
 
   /* Hover fill and the accent used for hovered outlines. */
-  --hover-surface: #f0f1f3;
-  --hover-line: #212121;
+  --hover-surface: #f0ebe2;
+  --hover-line: #2e2a26;
 
   /* Foreground for text and outlines sitting ON a brand colour fill. These
      stay constant across themes: a yellow panel is bright in both. */
-  --on-brand: #212121;
-  --on-brand-muted: #6b5600;
+  --on-brand: #3a3128;
+  --on-brand-muted: #7a6535;
   --on-accent: #ffffff;
 
   /* Rounded gothic for headings and buttons; body stays on Noto Sans JP so
@@ -61,29 +64,35 @@
 
 /* Timee itself ships light-only; this dark set keeps the same yellow/blue
    roles at brightness levels that survive a dark surface. */
+/* The dark palette lives in one place and is applied two ways: by the OS
+   preference, and by an explicit choice stored on the document root. The
+   explicit choice wins, so a user who prefers light during the day can keep
+   it even when their system flips to dark. */
 @media (prefers-color-scheme: dark) {
-  :root {
-    --yellow: #ffd633;
-    --yellow-soft: #4a3f10;
-    --yellow-deep: #b9941c;
-    --blue: #4c9dff;
-    --blue-deep: #1f6fd0;
-    --blue-soft: #16304f;
-    --green: #3fd08a;
-    --green-deep: #1f8f5c;
-    --green-soft: #123528;
-    --orange: #ffa23d;
-    --orange-deep: #c26f14;
-    --orange-soft: #40290f;
-    --red: #ff6b61;
+  :root:not([data-theme="light"]) {
+    --yellow: #f0c765;
+    --yellow-soft: #3f3c22;
+    --yellow-deep: #b08f34;
+    --blue: #6aa5e8;
+    --blue-deep: #3d6fa8;
+    --blue-soft: #1f303a;
+    --green: #5cba8d;
+    --green-deep: #34795a;
+    --green-soft: #1d3328;
+    --orange: #e0a173;
+    --orange-deep: #a8703f;
+    --orange-soft: #392f22;
+    --red: #e08b84;
 
-    --bg: #16171a;
-    --surface: #1e2025;
-    --surface-sunken: #24262c;
-    --text: #f4f5f7;
-    --muted: #a5a8b0;
-    --border: #33363d;
-    --border-strong: #f4f5f7;
+    /* Night in a forest rather than a switched-off screen: a green-leaning
+       charcoal keeps the calm, outdoors feel after dark. */
+    --bg: #171d19;
+    --surface: #1f2723;
+    --surface-sunken: #26302b;
+    --text: #e8ece7;
+    --muted: #9aa69d;
+    --border: #35403a;
+    --border-strong: #e8ece7;
 
     --accent: var(--blue);
     --accent-text: #0e1013;
@@ -97,11 +106,54 @@
 
     /* Lighter than the surface so hover reads as raised, and a muted gold
        outline instead of full-strength yellow, which glares on dark. */
-    --hover-surface: #2b2e35;
-    --hover-line: #b99a1f;
+    --hover-surface: #2d3832;
+    --hover-line: #b08f34;
 
     color-scheme: dark;
   }
+}
+
+:root[data-theme="dark"] {
+  --yellow: #f0c765;
+  --yellow-soft: #3f3c22;
+  --yellow-deep: #b08f34;
+  --blue: #6aa5e8;
+  --blue-deep: #3d6fa8;
+  --blue-soft: #1f303a;
+  --green: #5cba8d;
+  --green-deep: #34795a;
+  --green-soft: #1d3328;
+  --orange: #e0a173;
+  --orange-deep: #a8703f;
+  --orange-soft: #392f22;
+  --red: #e08b84;
+
+  /* Night in a forest rather than a switched-off screen: a green-leaning
+     charcoal keeps the calm, outdoors feel after dark. */
+  --bg: #171d19;
+  --surface: #1f2723;
+  --surface-sunken: #26302b;
+  --text: #e8ece7;
+  --muted: #9aa69d;
+  --border: #35403a;
+  --border-strong: #e8ece7;
+
+  --accent: var(--blue);
+  --accent-text: #0e1013;
+  --accent-shadow: var(--blue-deep);
+
+  --hard: var(--yellow);
+  --hard-bg: #40360d;
+  --done: #63d9a0;
+  --done-bg: #123d2e;
+  --error: #ff8078;
+
+  /* Lighter than the surface so hover reads as raised, and a muted gold
+     outline instead of full-strength yellow, which glares on dark. */
+  --hover-surface: #2d3832;
+  --hover-line: #b08f34;
+
+  color-scheme: dark;
 }
 
 * {
@@ -219,10 +271,12 @@ body {
 
 .login__badge {
   margin: 0;
-  font-size: 0.75rem;
+  /* Japanese brand mark: no uppercasing, and only a hair of tracking —
+     letter-spacing built for Latin caps makes kana look scattered. */
+  font-family: var(--font-display);
+  font-size: 1rem;
   font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  letter-spacing: 0.04em;
   color: var(--on-brand-muted);
 }
 
@@ -628,9 +682,10 @@ body {
 
 .shell__badge {
   margin: 0;
-  font-size: 0.78rem;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
   color: var(--on-brand);
   background: var(--yellow);
   display: inline-block;
@@ -733,21 +788,24 @@ body {
   background: var(--hover-surface);
 }
 
-.usermenu__avatar {
+.avatar {
   width: 1.85rem;
   height: 1.85rem;
   border-radius: 50%;
   flex: none;
   object-fit: cover;
+  background: var(--surface-sunken);
 }
 
-.usermenu__avatar--fallback {
+.avatar--fallback {
   display: grid;
   place-items: center;
   background: var(--accent);
   color: var(--accent-text);
+  font-family: var(--font-display);
   font-weight: 700;
   font-size: 0.82rem;
+  text-transform: uppercase;
 }
 
 .usermenu__name {
@@ -862,6 +920,8 @@ body {
 }
 
 /* --- banner + progress ------------------------------------------------ */
+/* A tinted panel rather than a solid block: at this size a saturated fill
+   dominates the page, which fights the calm palette everywhere else. */
 .banner {
   display: flex;
   align-items: center;
@@ -870,17 +930,17 @@ body {
   padding: 1.1rem 1.35rem;
   margin-bottom: 1rem;
   border-radius: var(--radius-card);
-  background: var(--blue);
-  color: var(--on-accent);
-  box-shadow: 0 5px 0 var(--blue-deep);
+  background: var(--blue-soft);
+  border: 2px solid var(--blue);
+  color: var(--text);
 }
 
 .banner__eyebrow {
   margin: 0;
   font-size: 0.78rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
-  opacity: 0.85;
+  letter-spacing: 0.04em;
+  color: var(--blue);
 }
 
 .banner__title {
@@ -896,7 +956,8 @@ body {
   font-size: 1.1rem;
   padding: 0.35rem 0.8rem;
   border-radius: var(--radius-pill);
-  background: rgba(0, 0, 0, 0.18);
+  background: var(--surface);
+  border: 2px solid var(--border);
 }
 
 .banner__streak strong {
@@ -910,6 +971,8 @@ body {
   margin-bottom: 1.5rem;
 }
 
+/* Track stays neutral: a tinted track reads as a full bar at a glance, which
+   is exactly the wrong signal at 0%. */
 .hud__bar {
   flex: 1;
   height: 1rem;
@@ -925,6 +988,9 @@ body {
   background: var(--yellow);
   border-radius: var(--radius-pill);
   transition: width 0.35s ease;
+  /* Keeps a sliver visible at 0% so the bar reads as "not started" rather
+     than as a missing element. */
+  min-width: 0.55rem;
 }
 
 .hud__progress {
@@ -1020,14 +1086,17 @@ body {
   animation: path-bob 1.6s ease-in-out infinite;
 }
 
-/* Review nodes get the review colour, so the list reads at a glance. */
+/* Review nodes keep the neutral surface and carry the review colour in the
+   icon and the drop only — a tinted fill turns muddy on a dark background. */
 .path__step--review:not(.path__step--done):not(.path__step--current)
   .path__node {
-  background: var(--orange-soft);
-  color: var(--orange-deep);
+  color: var(--orange);
+  /* A thin ring rather than a thick coloured drop: the heavy version bled
+     around the circle and read as a muddy brown fill. */
   box-shadow:
-    0 6px 0 var(--orange),
-    inset 0 3px 0 rgba(255, 255, 255, 0.3);
+    inset 0 0 0 2px var(--orange),
+    0 6px 0 var(--border),
+    inset 0 3px 0 rgba(255, 255, 255, 0.18);
 }
 
 .path__node:active {
@@ -1625,4 +1694,49 @@ body {
   font-family: var(--font-display);
   font-weight: 700;
   color: var(--green);
+}
+
+/* --- theme picker ------------------------------------------------------ */
+.themepick {
+  padding: 0.5rem 0.6rem 0.65rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 0.3rem;
+}
+
+.themepick__label {
+  margin: 0 0 0.4rem;
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.themepick__options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.25rem;
+  padding: 0.2rem;
+  background: var(--surface-sunken);
+  border-radius: var(--radius-pill);
+}
+
+.themepick__option {
+  padding: 0.35rem 0.3rem;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.themepick__option:hover {
+  color: var(--text);
+}
+
+.themepick__option--on {
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 1px 0 var(--border);
 }

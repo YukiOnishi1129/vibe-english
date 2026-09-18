@@ -10,12 +10,17 @@ import { readFileSync } from "node:fs";
 const FILE = "apps/web/src/styles.css";
 const source = readFileSync(FILE, "utf8");
 
+// Strip comments first: prose mentioning a colour is not a hardcoded value.
+const withoutComments = source.replace(/\/\*[\s\S]*?\*\//g, (match) =>
+  match.replace(/[^\n]/g, " "),
+);
+
 const offenders = [];
-source.split(/\r?\n/).forEach((line, index) => {
+withoutComments.split(/\r?\n/).forEach((line, index) => {
   if (!/#[0-9a-fA-F]{3,8}\b/.test(line)) return;
   // A token declaration: `  --name: #abc;`
   if (/^\s*--[\w-]+:\s*#[0-9a-fA-F]{3,8};/.test(line)) return;
-  offenders.push(`${FILE}:${index + 1}  ${line.trim()}`);
+  offenders.push(`${FILE}:${index + 1}  ${source.split(/\r?\n/)[index].trim()}`);
 });
 
 if (offenders.length > 0) {

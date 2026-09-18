@@ -11,7 +11,7 @@ export type ReviewViewPresenterProps = {
 
 const GROUP_EMOJI: Record<string, string> = {
   struggled: "🔁",
-  hard: "📌",
+  hard: "🔖",
 };
 
 export function ReviewViewPresenter({
@@ -25,7 +25,9 @@ export function ReviewViewPresenter({
     <main className="screen">
       <header className="page-head">
         <h1 className="page-head__title">復習</h1>
-        <p className="muted">つまずいたフレーズだけ集めています。</p>
+        <p className="muted">
+          つまずいたフレーズと、ブックマークしたフレーズ。
+        </p>
       </header>
 
       {errorMessage && <p className="error">{errorMessage}</p>}
@@ -33,7 +35,7 @@ export function ReviewViewPresenter({
 
       {!isLoading && empty && (
         <p className="muted">
-          まだありません。練習して「むずかった」を選ぶとここに入ります。
+          まだありません。問題を間違えるか、ブックマークするとここに入ります。
         </p>
       )}
 

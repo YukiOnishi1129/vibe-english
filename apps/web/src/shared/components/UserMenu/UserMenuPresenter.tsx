@@ -1,4 +1,12 @@
 import { useEffect, useRef } from "react";
+import { Avatar } from "@/shared/components/Avatar";
+import type { ThemeChoice } from "@/shared/hooks/useTheme";
+
+const THEME_OPTIONS: { value: ThemeChoice; label: string }[] = [
+  { value: "light", label: "昼" },
+  { value: "dark", label: "夜" },
+  { value: "system", label: "自動" },
+];
 
 // Presentational only: props in, JSX out.
 
@@ -8,9 +16,11 @@ export type UserMenuPresenterProps = {
   open: boolean;
   signingOut: boolean;
   errorMessage: string | null;
+  theme: ThemeChoice;
   onToggle: () => void;
   onClose: () => void;
   onSignOut: () => void;
+  onThemeChange: (theme: ThemeChoice) => void;
 };
 
 export function UserMenuPresenter({
@@ -19,9 +29,11 @@ export function UserMenuPresenter({
   open,
   signingOut,
   errorMessage,
+  theme,
   onToggle,
   onClose,
   onSignOut,
+  onThemeChange,
 }: UserMenuPresenterProps) {
   const rootRef = useRef<HTMLDivElement>(null);
 
@@ -44,8 +56,6 @@ export function UserMenuPresenter({
     };
   }, [open, onClose]);
 
-  const initial = userName.trim().charAt(0) || "?";
-
   return (
     <div className="usermenu" ref={rootRef}>
       <button
@@ -55,13 +65,7 @@ export function UserMenuPresenter({
         aria-haspopup="menu"
         aria-expanded={open}
       >
-        {userImage ? (
-          <img className="usermenu__avatar" src={userImage} alt="" />
-        ) : (
-          <span className="usermenu__avatar usermenu__avatar--fallback">
-            {initial}
-          </span>
-        )}
+        <Avatar src={userImage} name={userName} className="usermenu__avatar" />
         <span className="usermenu__name">{userName}</span>
         <span className="usermenu__caret" aria-hidden="true">
           ▾
@@ -70,6 +74,25 @@ export function UserMenuPresenter({
 
       {open && (
         <div className="usermenu__popover" role="menu">
+          <div className="themepick">
+            <p className="themepick__label">見た目</p>
+            <div className="themepick__options" role="group" aria-label="見た目">
+              {THEME_OPTIONS.map((option) => (
+                <button
+                  key={option.value}
+                  type="button"
+                  className={`themepick__option ${
+                    theme === option.value ? "themepick__option--on" : ""
+                  }`}
+                  onClick={() => onThemeChange(option.value)}
+                  aria-pressed={theme === option.value}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <button
             type="button"
             className="usermenu__item"
