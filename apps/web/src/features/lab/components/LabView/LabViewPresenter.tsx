@@ -1,3 +1,4 @@
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import type {
   LabCard as Card,
@@ -38,6 +39,18 @@ export function LabViewPresenter({
   onBack,
   onSelectStep,
 }: LabViewPresenterProps) {
+  // Questions have to be attempted before moving on; the other steps are
+  // just shown, so they unlock immediately.
+  const [answered, setAnswered] = useState(true);
+
+  const cardKey = card ? `${card.kind}:${card.chunk.id}` : "";
+  useEffect(() => setAnswered(true), [cardKey]);
+
+  const handleAnsweredChange = useCallback(
+    (value: boolean) => setAnswered(value),
+    [],
+  );
+
   if (isLoading) {
     return (
       <main className="screen screen--center">
@@ -93,7 +106,11 @@ export function LabViewPresenter({
         <div className="pcard">
           <div key={`${step.kind}:${cardIndex}`} className="pcard__slide">
             <p className="pcard__title">{step.title}</p>
-            <LabCard card={card} onSpeak={onSpeak} />
+            <LabCard
+              card={card}
+              onSpeak={onSpeak}
+              onAnsweredChange={handleAnsweredChange}
+            />
           </div>
         </div>
       </div>
@@ -107,7 +124,12 @@ export function LabViewPresenter({
         >
           戻る
         </button>
-        <button type="button" className="button button--primary" onClick={onNext}>
+        <button
+          type="button"
+          className="button button--primary"
+          onClick={onNext}
+          disabled={!answered}
+        >
           次へ
         </button>
       </nav>

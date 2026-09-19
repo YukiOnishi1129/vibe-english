@@ -9,19 +9,40 @@ import { BuildDrill } from "@/features/lab/components/BuildDrill";
 export type LabCardProps = {
   card: Card;
   onSpeak: (text: string, rate?: number) => void;
+  /** Lets the deck hold "next" until a question has been attempted. */
+  onAnsweredChange?: (answered: boolean) => void;
 };
 
-export function LabCard({ card, onSpeak }: LabCardProps) {
+export function LabCard({ card, onSpeak, onAnsweredChange }: LabCardProps) {
   const [revealed, setRevealed] = useState(false);
   const [typed, setTyped] = useState("");
   const [correct, setCorrect] = useState<boolean | null>(null);
+  const [builtCorrect, setBuiltCorrect] = useState(false);
   const key = `${card.kind}:${card.chunk.id}`;
 
   useEffect(() => {
     setRevealed(false);
     setTyped("");
     setCorrect(null);
+    setBuiltCorrect(false);
   }, [key]);
+
+  // Steps that ask something stay "unanswered" until the learner has had a
+  // go; the others are done as soon as they are shown. Speaking counts as
+  // attempted once the answer has been revealed — there is nothing to grade,
+  // but skipping straight past would defeat the point of the card.
+  const answered =
+    card.kind === "blank"
+      ? correct !== null
+      : card.kind === "build"
+        ? builtCorrect
+        : card.kind === "translate"
+          ? revealed
+          : true;
+
+  useEffect(() => {
+    onAnsweredChange?.(answered);
+  }, [answered, onAnsweredChange]);
 
   const example = card.chunk.examples[0];
 
@@ -84,7 +105,13 @@ export function LabCard({ card, onSpeak }: LabCardProps) {
 
   if (card.kind === "build") {
     return (
-      <BuildDrill key={drill.id} drill={drill} gloss={drill.prompt} onSpeak={onSpeak} />
+      <BuildDrill
+        key={drill.id}
+        drill={drill}
+        gloss={drill.prompt}
+        onSpeak={onSpeak}
+        onChecked={() => setBuiltCorrect(true)}
+      />
     );
   }
 

@@ -1853,11 +1853,17 @@ body {
   color: var(--muted);
 }
 
+/* Stacked, not side by side: a right-hand "retry" sits directly above the
+   deck's "next" and gets pressed by mistake. */
 .labcard__actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.5rem;
+  display: grid;
+  gap: 0.45rem;
+  justify-items: center;
+  width: 100%;
+}
+
+.labcard__actions .button {
+  margin-top: 0;
 }
 
 /* The task line has to be read, so it gets weight and the accent colour

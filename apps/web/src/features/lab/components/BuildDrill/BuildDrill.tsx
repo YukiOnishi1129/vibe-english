@@ -12,9 +12,16 @@ export type BuildDrillProps = {
   drill: ChunkDrill;
   gloss: string | null;
   onSpeak: (text: string) => void;
+  /** Fires once the answer has been checked, right or wrong. */
+  onChecked?: () => void;
 };
 
-export function BuildDrill({ drill, gloss, onSpeak }: BuildDrillProps) {
+export function BuildDrill({
+  drill,
+  gloss,
+  onSpeak,
+  onChecked,
+}: BuildDrillProps) {
   // Both memos key on drill.pieces itself: `?? []` would build a new array
   // every render and reshuffle the tiles under the learner's finger.
   const pieces = useMemo(() => drill.pieces ?? [], [drill.pieces]);
@@ -32,6 +39,7 @@ export function BuildDrill({ drill, gloss, onSpeak }: BuildDrillProps) {
   const check = () => {
     if (!complete || result !== null) return;
     setResult(joinPieces(built) === joinPieces(pieces));
+    onChecked?.();
   };
 
   const reset = () => {
