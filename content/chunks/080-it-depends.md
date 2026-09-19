@@ -29,6 +29,7 @@ answer: depends
 ## 日本語から
 予算次第ですね。
 answer: It depends on the budget.
+pieces: It depends / on the budget.
 
 ## 内部メモ
 on の後ろが名詞でも節でもいい点を例文で見せる。

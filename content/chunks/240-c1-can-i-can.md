@@ -30,6 +30,7 @@ answer: speak
 ## 日本語から
 彼女は3か国語を話せます。
 answer: She can speak three languages.
+pieces: She can speak / three languages.
 
 ## 内部メモ
 can + 原形。三単現の s がつかない点を穴埋めで。

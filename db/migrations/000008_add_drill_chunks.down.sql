@@ -1,0 +1,1 @@
+ALTER TABLE chunk_drills DROP COLUMN IF EXISTS pieces;

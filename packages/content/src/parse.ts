@@ -10,6 +10,12 @@ export type ParsedDrill = {
   type: "blank" | "translate";
   prompt: string;
   answer: string;
+  /**
+   * The answer split into meaningful groups for the build-the-sentence step.
+   * Authors choose the boundaries: splitting on spaces would cut phrases like
+   * "how was" in half, which is the opposite of learning in chunks.
+   */
+  pieces: string[] | null;
   sortOrder: number;
 };
 
@@ -125,8 +131,33 @@ function parseDrill(
     throw new Error(`${file}: "## ${heading}" is missing an "answer:" line`);
   }
 
-  const prompt = lines.slice(0, answerIndex).join("\n").trim();
+  const prompt = lines
+    .slice(0, answerIndex)
+    .filter((line) => !/^pieces:/i.test(line))
+    .join("\n")
+    .trim();
   const answer = lines[answerIndex].replace(/^answer:/i, "").trim();
+
+  const piecesLine = lines.find((line) => /^pieces:/i.test(line));
+  const pieces = piecesLine
+    ? piecesLine
+        .replace(/^pieces:/i, "")
+        .split("/")
+        .map((piece) => piece.trim())
+        .filter(Boolean)
+    : null;
+
+  if (pieces) {
+    // The pieces must reconstruct the answer exactly, or the build step would
+    // be unsolvable — a typo here is easy to make and invisible otherwise.
+    const rebuilt = pieces.join(" ").replace(/\s+/g, " ").trim();
+    const expected = answer.replace(/\s+/g, " ").trim();
+    if (rebuilt !== expected) {
+      throw new Error(
+        `${file}: "## ${heading}" pieces do not rebuild the answer\n  pieces: ${rebuilt}\n  answer: ${expected}`,
+      );
+    }
+  }
 
   if (!prompt) {
     throw new Error(`${file}: "## ${heading}" is missing a prompt`);
@@ -135,7 +166,7 @@ function parseDrill(
     throw new Error(`${file}: "## ${heading}" has an empty answer`);
   }
 
-  return { type, prompt, answer, sortOrder };
+  return { type, prompt, answer, pieces, sortOrder };
 }
 
 /** Parses one chunk Markdown file. Throws on malformed content. */

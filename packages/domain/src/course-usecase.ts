@@ -77,6 +77,7 @@ async function decorateCourseChunks(
         type: drill.type as DrillType,
         prompt: drill.prompt,
         answer: drill.answer,
+        pieces: drill.pieces,
       })),
       progress: progressRow
         ? {

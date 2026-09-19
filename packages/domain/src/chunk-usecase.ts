@@ -94,6 +94,7 @@ function assemble(
       type: drill.type as DrillType,
       prompt: drill.prompt,
       answer: drill.answer,
+      pieces: drill.pieces,
     })),
     progress: toProgress(progressByChunk.get(chunk.id)),
     isHard: hard.has(chunk.id),

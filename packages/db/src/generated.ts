@@ -33,6 +33,7 @@ export interface ChunkDrills {
   answer: string;
   chunk_id: string;
   id: string;
+  pieces: string[] | null;
   prompt: string;
   sort_order: Generated<number>;
   type: string;

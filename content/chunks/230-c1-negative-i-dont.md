@@ -30,6 +30,7 @@ answer: doesn't
 ## 日本語から
 彼女はコーヒーを飲みません。
 answer: She doesn't drink coffee.
+pieces: She doesn't / drink coffee.
 
 ## 内部メモ
 don't / doesn't と be動詞の not を並べて違いを見せる。

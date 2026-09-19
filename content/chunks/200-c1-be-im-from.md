@@ -30,6 +30,7 @@ answer: am
 ## 日本語から
 大阪出身です。
 answer: I am from Osaka.
+pieces: I am / from Osaka.
 
 ## 内部メモ
 be動詞の最初の1本。短縮形を自然に見せる。

@@ -15,7 +15,7 @@ import {
  * across all five phrases. Repeating the same kind of task five times in a row
  * is easier to settle into than switching mode on every card.
  */
-export type LabStepKind = "meaning" | "speak" | "blank" | "translate";
+export type LabStepKind = "meaning" | "speak" | "blank" | "build" | "translate";
 
 export type LabCard = {
   kind: LabStepKind;
@@ -42,6 +42,9 @@ const STEP_META: { kind: LabStepKind; title: string; hint: string }[] = [
   { kind: "meaning", title: "意味", hint: "どんな意味か見てみよう" },
   { kind: "speak", title: "発音", hint: "聞いて、まねして言ってみよう" },
   { kind: "blank", title: "穴埋め", hint: "空欄に入る語は？" },
+  // Between filling one gap and producing the whole sentence unaided: the
+  // words are given, the ordering is not.
+  { kind: "build", title: "書く", hint: "並べて文を作ろう" },
   { kind: "translate", title: "話す", hint: "日本語を見て、英語で言ってみよう" },
 ];
 
@@ -59,12 +62,18 @@ export function buildSteps(chunks: Chunk[]): LabStep[] {
         drill:
           meta.kind === "blank"
             ? drillOf(chunk, "blank")
-            : meta.kind === "translate"
+            : meta.kind === "build" || meta.kind === "translate"
               ? drillOf(chunk, "translate")
               : null,
       }))
       // A phrase without the drill for this step would be a blank card.
-      .filter((card) => meta.kind === "meaning" || meta.kind === "speak" || card.drill),
+      .filter((card) => {
+        if (meta.kind === "meaning" || meta.kind === "speak") return true;
+        if (!card.drill) return false;
+        // The build step needs authored word groups; without them the drill
+        // has nothing to assemble.
+        return meta.kind !== "build" || (card.drill.pieces?.length ?? 0) > 1;
+      }),
   })).filter((step) => step.cards.length > 0);
 }
 

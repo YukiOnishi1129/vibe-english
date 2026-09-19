@@ -84,7 +84,7 @@ export async function listDrillsForChunks(trx: Trx, chunkIds: string[]) {
 
   return trx
     .selectFrom("chunk_drills")
-    .select(["id", "chunk_id", "type", "prompt", "answer"])
+    .select(["id", "chunk_id", "type", "prompt", "answer", "pieces"])
     .where("chunk_id", "in", chunkIds)
     .orderBy("sort_order", "asc")
     .orderBy("id", "asc")

@@ -120,14 +120,23 @@ async function seedChunk(client: pg.PoolClient, chunk: ParsedChunk) {
     const id = drillId(chunk.id, drill.type);
     drillIds.push(id);
     await client.query(
-      `INSERT INTO chunk_drills (id, chunk_id, type, prompt, answer, sort_order)
-       VALUES ($1, $2, $3, $4, $5, $6)
+      `INSERT INTO chunk_drills (id, chunk_id, type, prompt, answer, pieces, sort_order)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
        ON CONFLICT (id) DO UPDATE SET
          type = EXCLUDED.type,
          prompt = EXCLUDED.prompt,
          answer = EXCLUDED.answer,
+         pieces = EXCLUDED.pieces,
          sort_order = EXCLUDED.sort_order`,
-      [id, chunk.id, drill.type, drill.prompt, drill.answer, drill.sortOrder],
+      [
+        id,
+        chunk.id,
+        drill.type,
+        drill.prompt,
+        drill.answer,
+        drill.pieces,
+        drill.sortOrder,
+      ],
     );
   }
   await client.query(

@@ -29,6 +29,7 @@ answer: call
 ## 日本語から
 もう7時近い。今日はここまでにしよう。
 answer: It's almost seven. Let's call it a day.
+pieces: It's almost seven. / Let's call it a day.
 
 ## 内部メモ
 最後のチャンクなので締めの語感で終わらせる。

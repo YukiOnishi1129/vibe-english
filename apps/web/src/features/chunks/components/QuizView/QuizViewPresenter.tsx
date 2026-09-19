@@ -137,6 +137,9 @@ export function QuizViewPresenter({
             {typed ? "空欄に入るのは？" : "声に出して英語にしてみよう"}
           </p>
           <p className="pcard__prompt">{drill.prompt}</p>
+          {typed && question.gloss && (
+            <p className="labcard__gloss">{question.gloss}</p>
+          )}
 
           {typed ? (
             <>

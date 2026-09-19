@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { LabCard as Card } from "@/features/lab/hooks/useLabSession";
 import { isAnswerCorrect } from "@/features/chunks/utils/answer";
+import { BuildDrill } from "@/features/lab/components/BuildDrill";
 
 // Presentational: one practice card. No judging here — this half of the
 // session is practice, so every card just moves on.
@@ -80,6 +81,12 @@ export function LabCard({ card, onSpeak }: LabCardProps) {
 
   if (!card.drill) return null;
   const { drill } = card;
+
+  if (card.kind === "build") {
+    return (
+      <BuildDrill key={drill.id} drill={drill} gloss={drill.prompt} onSpeak={onSpeak} />
+    );
+  }
 
   // Writing the word is the practice; revealing it is not. Still no judgement
   // carried forward — this half is rehearsal, the test comes later.

@@ -29,6 +29,7 @@ answer: get
 ## 日本語から
 アイスティーのLをもらえますか。
 answer: Can I get a large iced tea?
+pieces: Can I get / a large / iced tea?
 
 ## 内部メモ
 最初の一本目。注文文脈だけに絞って、依頼全般には広げない。

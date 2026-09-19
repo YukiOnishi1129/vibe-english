@@ -29,6 +29,7 @@ answer: sure
 ## 日本語から
 今夜来る？まだわからないです。
 answer: Are you joining tonight? I'm not sure yet.
+pieces: Are you joining / tonight? / I'm not sure yet.
 
 ## 内部メモ
 yet を落とすと冷たく響くので、yet 込みで覚えさせる。

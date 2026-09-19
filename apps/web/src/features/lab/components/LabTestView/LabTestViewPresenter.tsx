@@ -17,6 +17,7 @@ export type LabTestViewPresenterProps = {
   swipeHandlers: React.HTMLAttributes<HTMLDivElement>;
   onAnswer: (wasCorrect: boolean) => void;
   onSpeak: (text: string) => void;
+  onRestart: () => void;
 };
 
 export function LabTestViewPresenter({
@@ -31,6 +32,7 @@ export function LabTestViewPresenter({
   swipeHandlers,
   onAnswer,
   onSpeak,
+  onRestart,
 }: LabTestViewPresenterProps) {
   const [value, setValue] = useState("");
   const [judged, setJudged] = useState<boolean | null>(null);
@@ -61,8 +63,24 @@ export function LabTestViewPresenter({
           <p className="done">
             {total}問中 {correct}問 正解
           </p>
-          <p className="muted">できなかったものは復習に入れておいたよ。</p>
-          <Link className="button button--primary" to="/">
+          <p className="muted">
+            {correct === total
+              ? "できなかったものはなし。いい流れ。"
+              : "できなかったものは復習に入れておいたよ。"}
+          </p>
+          {/* Another go is the likely next step right after a score, so it
+              leads; the way out stays visible underneath. */}
+          <button
+            type="button"
+            className="button button--primary"
+            onClick={onRestart}
+          >
+            もう一度テスト
+          </button>
+          <Link className="button button--ghost" to="/lab/practice">
+            練習にもどる
+          </Link>
+          <Link className="button button--ghost" to="/">
             今日へもどる
           </Link>
         </section>
@@ -109,6 +127,9 @@ export function LabTestViewPresenter({
 
           <div className="pcard__body">
             <p className="pcard__prompt">{drill.prompt}</p>
+            {typed && question.gloss && (
+              <p className="labcard__gloss">{question.gloss}</p>
+            )}
 
             {typed ? (
               <>

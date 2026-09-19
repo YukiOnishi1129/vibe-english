@@ -6,6 +6,14 @@ export type QuizQuestion = {
   chunkId: string;
   phrase: string;
   drill: ChunkDrill;
+  /**
+   * Japanese for the sentence the blank came from.
+   *
+   * A blank has several defensible answers without it — "Can I ___ a coffee?"
+   * fits get, have and order alike — so the test would be guessing, not
+   * recall.
+   */
+  gloss: string | null;
 };
 
 /** How many questions the wrap-up asks, however many chunks are available. */
@@ -15,8 +23,13 @@ export function buildQuiz(chunks: Chunk[], seed: number): QuizQuestion[] {
   const pool: QuizQuestion[] = [];
 
   for (const chunk of chunks) {
+    // The spoken drill's prompt is the Japanese for the same sentence the
+    // blank is built from, so it doubles as the blank's gloss.
+    const gloss =
+      chunk.drills.find((drill) => drill.type === "translate")?.prompt ?? null;
+
     for (const drill of chunk.drills) {
-      pool.push({ chunkId: chunk.id, phrase: chunk.phrase, drill });
+      pool.push({ chunkId: chunk.id, phrase: chunk.phrase, drill, gloss });
     }
   }
 

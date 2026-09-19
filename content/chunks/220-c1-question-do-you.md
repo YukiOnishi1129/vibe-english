@@ -30,6 +30,7 @@ answer: Does
 ## 日本語から
 彼はこの近くに住んでいますか。
 answer: Does he live near here?
+pieces: Does he live / near here?
 
 ## 内部メモ
 Do と Does の使い分けを穴埋めで。

@@ -29,6 +29,7 @@ answer: Got
 ## 日本語から
 わかりました、説明ありがとう。
 answer: Got it, thanks for explaining.
+pieces: Got it, / thanks / for explaining.
 
 ## 内部メモ
 3つ目はくだけた口語形。フォーマル指導はしない方針。

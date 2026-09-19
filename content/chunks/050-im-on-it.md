@@ -29,6 +29,7 @@ answer: on
 ## 日本語から
 ログインの不具合直せる？すぐやります。
 answer: Can you fix the login bug? I'm on it.
+pieces: Can you fix / the login bug? / I'm on it.
 
 ## 内部メモ
 チームチャット文脈を想定。上下関係のニュアンスには踏み込まない。

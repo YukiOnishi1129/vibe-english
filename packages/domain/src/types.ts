@@ -13,6 +13,8 @@ export type ChunkDrill = {
   type: DrillType;
   prompt: string;
   answer: string;
+  /** Word groups for the build step; null when the drill has none. */
+  pieces: string[] | null;
 };
 
 export type ChunkProgress = {

@@ -52,6 +52,7 @@ export function LabTestViewContainer() {
       swipeHandlers={handlers}
       onAnswer={quiz.answer}
       onSpeak={speak}
+      onRestart={quiz.restart}
     />
   );
 }
