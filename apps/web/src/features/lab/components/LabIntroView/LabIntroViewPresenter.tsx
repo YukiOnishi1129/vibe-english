@@ -9,6 +9,10 @@ export type LabIntroViewPresenterProps = {
   errorMessage: string | null;
   /** Where the learner left off today, if anywhere. */
   resumeLabel: string | null;
+  /** Every step has been worked through today. */
+  practiceDone: boolean;
+  /** Step names, so the summary cannot drift from the real sequence. */
+  stepTitles: string[];
   onSpeak: (text: string) => void;
   onRestart: () => void;
 };
@@ -18,6 +22,8 @@ export function LabIntroViewPresenter({
   isLoading,
   errorMessage,
   resumeLabel,
+  practiceDone,
+  stepTitles,
   onSpeak,
   onRestart,
 }: LabIntroViewPresenterProps) {
@@ -26,7 +32,7 @@ export function LabIntroViewPresenter({
       <header className="page-head">
         <h1 className="page-head__title">今日のフレーズ</h1>
         <p className="muted">
-          この{chunks.length}つを、意味 → 発音 → 穴埋め → 話す の順に。
+          この{chunks.length}つを、{stepTitles.join(" → ")} の順に。
         </p>
       </header>
 
@@ -60,7 +66,23 @@ export function LabIntroViewPresenter({
 
       {chunks.length > 0 && (
         <div className="preview__start">
-          {resumeLabel ? (
+          {practiceDone ? (
+            <>
+              {/* Practice is done for today, so the test is the next thing to
+                  do rather than another pass through the cards. */}
+              <Link className="button button--primary" to="/lab/test">
+                テストをやる
+              </Link>
+              <Link
+                className="button button--ghost"
+                to="/lab/practice"
+                onClick={onRestart}
+              >
+                もう一度練習する
+              </Link>
+              <p className="preview__note">今日の練習はひととおり終わりました。</p>
+            </>
+          ) : resumeLabel ? (
             <>
               {/* Resuming is the likely intent, so it leads; starting over is
                   still one tap away. */}

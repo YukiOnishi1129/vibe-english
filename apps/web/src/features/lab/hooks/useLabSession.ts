@@ -98,7 +98,9 @@ export function useLabSession(chunks: Chunk[]) {
 
   useEffect(() => {
     if (steps.length === 0) return;
-    if (finished) clearProgress();
+    // Finishing is recorded rather than cleared: the intro screen needs to
+    // know practice is done so it can offer the test instead of "start".
+    if (finished) saveProgress(steps.length - 1, 0, true);
     else saveProgress(stepIndex, cardIndex);
   }, [steps.length, finished, stepIndex, cardIndex]);
 

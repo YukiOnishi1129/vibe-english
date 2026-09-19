@@ -3,6 +3,8 @@
 export type LabProgress = {
   stepIndex: number;
   cardIndex: number;
+  /** Set once every step has been worked through. */
+  practiceDone: boolean;
   /** The day it was saved, so yesterday's position is not restored. */
   day: string;
 };
@@ -34,6 +36,7 @@ export function loadProgress(day = today()): LabProgress | null {
     return {
       stepIndex: parsed.stepIndex,
       cardIndex: parsed.cardIndex,
+      practiceDone: parsed.practiceDone === true,
       day: parsed.day,
     };
   } catch {
@@ -42,11 +45,15 @@ export function loadProgress(day = today()): LabProgress | null {
   }
 }
 
-export function saveProgress(stepIndex: number, cardIndex: number) {
+export function saveProgress(
+  stepIndex: number,
+  cardIndex: number,
+  practiceDone = false,
+) {
   try {
     window.localStorage.setItem(
       STORAGE_KEY,
-      JSON.stringify({ stepIndex, cardIndex, day: today() }),
+      JSON.stringify({ stepIndex, cardIndex, practiceDone, day: today() }),
     );
   } catch {
     // Not being able to remember the position is not worth surfacing.

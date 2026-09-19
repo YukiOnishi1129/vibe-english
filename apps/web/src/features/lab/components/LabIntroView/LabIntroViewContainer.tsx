@@ -14,7 +14,8 @@ export function LabIntroViewContainer() {
   // Name the saved position by its step, which is more meaningful than a
   // card number ("穴埋め 2/5" rather than "9枚目").
   const steps = chunks.length > 0 ? buildSteps(chunks) : [];
-  const step = progress ? steps[progress.stepIndex] : undefined;
+  const practiceDone = progress?.practiceDone === true;
+  const step = progress && !practiceDone ? steps[progress.stepIndex] : undefined;
   const resumeLabel = step
     ? `${step.title} ${progress!.cardIndex + 1}/${step.cards.length}`
     : null;
@@ -25,6 +26,8 @@ export function LabIntroViewContainer() {
       isLoading={isPending}
       errorMessage={isError ? "読み込みに失敗しました。" : null}
       resumeLabel={resumeLabel}
+      practiceDone={practiceDone}
+      stepTitles={steps.map((item) => item.title)}
       onSpeak={speak}
       onRestart={reset}
     />
