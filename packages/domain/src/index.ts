@@ -5,6 +5,7 @@ export type {
   CourseDetail,
   CourseSummary,
   CourseUnit,
+  PracticeDay,
   ReviewGroup,
   Streak,
   ChunkDrill,
@@ -26,6 +27,7 @@ export {
   getCourseDetail,
   chooseCourse,
 } from "./course-usecase";
+export { getPracticeHistory } from "./history-usecase";
 export {
   getChunk,
   getHardChunks,

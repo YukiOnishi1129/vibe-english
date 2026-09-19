@@ -1,6 +1,11 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Chunk, ChunkDrill } from "@vibe-english/domain";
 import { seededShuffle } from "@/features/chunks/utils/shuffle";
+import {
+  clearTestProgress,
+  loadTestProgress,
+  saveTestProgress,
+} from "@/features/lab/utils/testProgress";
 
 export type QuizQuestion = {
   chunkId: string;
@@ -63,16 +68,77 @@ export function useWrapUpQuiz(
 ) {
   // Seeded once per mount so the order is stable while answering.
   const seedRef = useRef(Math.floor(Math.random() * 2 ** 31) || 1);
-  const questions = useMemo(
-    () => buildQuiz(chunks, seedRef.current),
-    [chunks],
-  );
+  const fresh = useMemo(() => buildQuiz(chunks, seedRef.current), [chunks]);
+
+  // A test left half-finished resumes with the same questions in the same
+  // order; a new shuffle would ask things already answered.
+  const saved = useMemo(() => loadTestProgress(), []);
+  const questions = useMemo(() => {
+    if (!saved || saved.order.length === 0) return fresh;
+
+    // Match against every possible question, not the freshly drawn five: the
+    // saved test was itself a sample, so its ids rarely all appear in a new
+    // draw and the restore would silently fall back.
+    const byId = new Map<string, QuizQuestion>();
+    for (const chunk of chunks) {
+      const gloss =
+        chunk.drills.find((drill) => drill.type === "translate")?.prompt ?? null;
+      for (const drill of chunk.drills) {
+        byId.set(drill.id, {
+          chunkId: chunk.id,
+          phrase: chunk.phrase,
+          drill,
+          gloss,
+        });
+      }
+    }
+
+    const restored = saved.order
+      .map((id) => byId.get(id))
+      .filter((question): question is QuizQuestion => Boolean(question));
+
+    // Content changed since it was saved: start over rather than ask a
+    // shorter, half-matching test.
+    return restored.length === saved.order.length ? restored : fresh;
+  }, [fresh, saved, chunks]);
+
+  const resumable = questions === fresh ? null : saved;
 
   const [index, setIndex] = useState(0);
   const [correct, setCorrect] = useState(0);
   const missed = useRef<Set<string>>(new Set());
 
+  // Restoring cannot happen in the useState initialisers: on the first render
+  // the chunks are still loading, so there is nothing to match the saved
+  // question ids against and the position would stay at zero.
+  const restored = useRef(false);
+  useEffect(() => {
+    if (restored.current || !resumable) return;
+    restored.current = true;
+
+    setIndex(resumable.index);
+    setCorrect(resumable.correct);
+    missed.current = new Set(resumable.missedChunkIds);
+  }, [resumable]);
+
   const finished = index >= questions.length;
+
+  useEffect(() => {
+    if (questions.length === 0) return;
+    // Hold off until a pending restore has been applied, or the first save
+    // would overwrite the position being restored.
+    if (resumable && !restored.current) return;
+    if (finished) {
+      clearTestProgress();
+      return;
+    }
+    saveTestProgress({
+      order: questions.map((question) => question.drill.id),
+      index,
+      correct,
+      missedChunkIds: [...missed.current],
+    });
+  }, [questions, index, correct, finished, resumable]);
 
   // Guards against React running the state updater twice (StrictMode) and
   // reporting the same result to the server more than once.
@@ -105,6 +171,7 @@ export function useWrapUpQuiz(
     seedRef.current = Math.floor(Math.random() * 2 ** 31) || 1;
     missed.current = new Set();
     reported.current = false;
+    clearTestProgress();
     setIndex(0);
     setCorrect(0);
   }, []);

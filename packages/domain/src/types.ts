@@ -71,6 +71,13 @@ export type CourseDetail = {
   nextChunkId: string | null;
 };
 
+/** One day the learner practised, for the calendar. */
+export type PracticeDay = {
+  /** YYYY-MM-DD in the learner's own timezone. */
+  day: string;
+  answers: number;
+};
+
 export type ReviewGroup = {
   key: "struggled" | "hard";
   label: string;

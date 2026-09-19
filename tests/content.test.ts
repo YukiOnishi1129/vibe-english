@@ -60,11 +60,18 @@ describe("parseChunkMarkdown", () => {
     ]);
 
     expect(chunk.drills).toEqual([
-      { type: "blank", prompt: "First ___.", answer: "sentence", sortOrder: 10 },
+      {
+        type: "blank",
+        prompt: "First ___.",
+        answer: "sentence",
+        pieces: null,
+        sortOrder: 10,
+      },
       {
         type: "translate",
         prompt: "2つ目。",
         answer: "Second sentence.",
+        pieces: null,
         sortOrder: 20,
       },
     ]);
@@ -127,5 +134,33 @@ describe("content/chunks", () => {
       expect(chunk.examples.length, chunk.id).toBeGreaterThan(0);
       expect(chunk.drills.length, chunk.id).toBeGreaterThan(0);
     }
+  });
+});
+
+describe("pieces", () => {
+  const withPieces = VALID.replace(
+    "answer: Second sentence.",
+    "answer: Second sentence.\npieces: Second / sentence.",
+  );
+
+  it("splits the answer into the authored groups", () => {
+    const drill = parseChunkMarkdown(withPieces).drills.find(
+      (item) => item.type === "translate",
+    );
+    expect(drill?.pieces).toEqual(["Second", "sentence."]);
+  });
+
+  it("rejects pieces that do not rebuild the answer", () => {
+    const broken = VALID.replace(
+      "answer: Second sentence.",
+      "answer: Second sentence.\npieces: Second / SENTENCE.",
+    );
+    expect(() => parseChunkMarkdown(broken)).toThrow(/rebuild the answer/);
+  });
+
+  it("keeps the prompt free of the pieces line", () => {
+    const chunk = parseChunkMarkdown(withPieces);
+    const drill = chunk.drills.find((item) => item.type === "translate");
+    expect(drill?.prompt).toBe("2つ目。");
   });
 });
