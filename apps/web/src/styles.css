@@ -1696,27 +1696,27 @@ body {
 }
 
 /* --- lab (alternative lesson shape) ----------------------------------- */
-.lab__steps {
+.session__steps {
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 0.85rem;
   color: var(--muted);
 }
 
-.lab__hint {
+.session__hint {
   margin: 0 0 0.75rem;
   font-size: 0.85rem;
   color: var(--muted);
 }
 
-.labcard__example {
+.scard__example {
   margin-top: 0.5rem;
   padding-top: 0.75rem;
   border-top: 1px dashed var(--border);
   width: 100%;
 }
 
-.lab__swipehint {
+.session__swipehint {
   margin: 0.25rem 0 0;
   font-size: 0.75rem;
   color: var(--muted);
@@ -1847,7 +1847,7 @@ body {
   color: var(--muted);
 }
 
-.labcard__gloss {
+.scard__gloss {
   margin: -0.25rem 0 0.5rem;
   font-size: 0.9rem;
   color: var(--muted);
@@ -1855,20 +1855,20 @@ body {
 
 /* Stacked, not side by side: a right-hand "retry" sits directly above the
    deck's "next" and gets pressed by mistake. */
-.labcard__actions {
+.scard__actions {
   display: grid;
   gap: 0.45rem;
   justify-items: center;
   width: 100%;
 }
 
-.labcard__actions .button {
+.scard__actions .button {
   margin-top: 0;
 }
 
 /* The task line has to be read, so it gets weight and the accent colour
    rather than the muted treatment used for asides. */
-.labcard__task {
+.scard__task {
   margin: 0 0 0.25rem;
   padding: 0.3rem 0.9rem;
   border-radius: var(--radius-pill);
@@ -1934,4 +1934,8 @@ body {
 
 .build__tile:disabled {
   cursor: default;
+}
+
+.today__record {
+  margin-top: 1.25rem;
 }

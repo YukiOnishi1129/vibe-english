@@ -1,16 +1,16 @@
 import { useSpeech } from "@/shared/hooks/useSpeech";
 import { useDailySession } from "@/features/chunks/hooks/useChunks";
-import { useLabSession } from "@/features/lab/hooks/useLabSession";
-import { LabViewPresenter } from "./LabViewPresenter";
+import { usePracticeSession } from "@/features/chunks/hooks/usePracticeSession";
+import { PracticeSessionViewPresenter } from "./PracticeSessionViewPresenter";
 
-export function LabViewContainer() {
+export function PracticeSessionViewContainer() {
   const { data: session, isPending } = useDailySession();
   const { speak } = useSpeech();
 
-  const lab = useLabSession(session?.chunks ?? []);
+  const lab = usePracticeSession(session?.chunks ?? []);
 
   return (
-    <LabViewPresenter
+    <PracticeSessionViewPresenter
       step={lab.step}
       stepStatuses={lab.stepStatuses}
       card={lab.card}

@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
-import type { LabCard as Card } from "@/features/lab/hooks/useLabSession";
+import type { SessionCard as Card } from "@/features/chunks/hooks/usePracticeSession";
 import { isAnswerCorrect } from "@/features/chunks/utils/answer";
-import { BuildDrill } from "@/features/lab/components/BuildDrill";
+import { BuildDrill } from "@/features/chunks/components/BuildDrill";
 
 // Presentational: one practice card. No judging here — this half of the
 // session is practice, so every card just moves on.
 
-export type LabCardProps = {
+export type SessionCardProps = {
   card: Card;
   onSpeak: (text: string, rate?: number) => void;
   /** Lets the deck hold "next" until a question has been attempted. */
   onAnsweredChange?: (answered: boolean) => void;
 };
 
-export function LabCard({ card, onSpeak, onAnsweredChange }: LabCardProps) {
+export function SessionCard({ card, onSpeak, onAnsweredChange }: SessionCardProps) {
   const [revealed, setRevealed] = useState(false);
   const [typed, setTyped] = useState("");
   const [correct, setCorrect] = useState<boolean | null>(null);
@@ -61,12 +61,12 @@ export function LabCard({ card, onSpeak, onAnsweredChange }: LabCardProps) {
   if (card.kind === "meaning") {
     return (
       <div className="pcard__body">
-        <p className="labcard__task">こんな意味のフレーズ</p>
+        <p className="scard__task">こんな意味のフレーズ</p>
         <p className="pcard__phrase">{card.chunk.phrase}</p>
         <p className="pcard__reveal">{card.chunk.meaningJa}</p>
 
         {example && (
-          <div className="labcard__example">
+          <div className="scard__example">
             <p className="examples__en">{example.english}</p>
             <p className="examples__ja">{example.japanese}</p>
           </div>
@@ -78,10 +78,10 @@ export function LabCard({ card, onSpeak, onAnsweredChange }: LabCardProps) {
   if (card.kind === "speak") {
     return (
       <div className="pcard__body">
-        <p className="labcard__task">聞いて、まねして言ってみよう</p>
+        <p className="scard__task">聞いて、まねして言ってみよう</p>
         <p className="pcard__phrase">{card.chunk.phrase}</p>
         {/* Saying a phrase without knowing what it means is just noise. */}
-        <p className="labcard__gloss">{card.chunk.meaningJa}</p>
+        <p className="scard__gloss">{card.chunk.meaningJa}</p>
         <button
           type="button"
           className="button button--primary"
@@ -122,13 +122,13 @@ export function LabCard({ card, onSpeak, onAnsweredChange }: LabCardProps) {
 
     return (
       <div className="pcard__body">
-        <p className="labcard__task">空欄に入る語を書いてみよう</p>
+        <p className="scard__task">空欄に入る語を書いてみよう</p>
         <p className="pcard__prompt">{drill.prompt}</p>
 
         {/* Without the Japanese the blank has several defensible answers —
             "Can I ___ a coffee?" fits get, have and order alike — so the
             meaning is shown up front rather than as a reward. */}
-        {blankGloss && <p className="labcard__gloss">{blankGloss}</p>}
+        {blankGloss && <p className="scard__gloss">{blankGloss}</p>}
 
         <form
           className="answerbox"
@@ -174,12 +174,12 @@ export function LabCard({ card, onSpeak, onAnsweredChange }: LabCardProps) {
             </p>
 
             {blankSentence && (
-              <div className="labcard__example">
+              <div className="scard__example">
                 <p className="examples__en">{blankSentence}</p>
               </div>
             )}
 
-            <div className="labcard__actions">
+            <div className="scard__actions">
               <button
                 type="button"
                 className="button button--ghost pcard__listen"
@@ -210,7 +210,7 @@ export function LabCard({ card, onSpeak, onAnsweredChange }: LabCardProps) {
     <div className="pcard__body">
       {/* The instruction belongs on the card: the step header scrolls out of
           mind, and a lone Japanese sentence gives no clue what to do with it. */}
-      <p className="labcard__task">これ、英語で声に出してみて</p>
+      <p className="scard__task">これ、英語で声に出してみて</p>
       <p className="pcard__prompt">{drill.prompt}</p>
 
       {!revealed ? (

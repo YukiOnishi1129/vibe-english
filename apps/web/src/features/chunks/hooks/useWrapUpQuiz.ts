@@ -5,7 +5,7 @@ import {
   clearTestProgress,
   loadTestProgress,
   saveTestProgress,
-} from "@/features/lab/utils/testProgress";
+} from "@/features/chunks/utils/testProgress";
 
 export type QuizQuestion = {
   chunkId: string;

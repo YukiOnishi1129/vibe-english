@@ -3,10 +3,10 @@ import { useLocation } from "react-router-dom";
 import {
   clearProgress,
   loadProgress,
-  type LabProgress,
-} from "@/features/lab/utils/progress";
+  type SessionProgress,
+} from "@/features/chunks/utils/progress";
 
-const CHANGED = "yuru-eigo:lab-progress-changed";
+const CHANGED = "yuru-eigo:session-progress-changed";
 
 /**
  * Reads the saved position without owning a session.
@@ -15,9 +15,9 @@ const CHANGED = "yuru-eigo:lab-progress-changed";
  * does not run the deck; keeping this separate stops it from touching the
  * session's own state.
  */
-export function useLabProgress() {
+export function useSessionProgress() {
   const { key } = useLocation();
-  const [progress, setProgress] = useState<LabProgress | null>(() =>
+  const [progress, setProgress] = useState<SessionProgress | null>(() =>
     loadProgress(),
   );
 

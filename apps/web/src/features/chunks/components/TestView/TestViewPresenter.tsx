@@ -5,7 +5,7 @@ import { isAnswerCorrect } from "@/features/chunks/utils/answer";
 
 // Presentational only. The test half judges; the practice half does not.
 
-export type LabTestViewPresenterProps = {
+export type TestViewPresenterProps = {
   question: QuizQuestion | undefined;
   index: number;
   total: number;
@@ -20,7 +20,7 @@ export type LabTestViewPresenterProps = {
   onRestart: () => void;
 };
 
-export function LabTestViewPresenter({
+export function TestViewPresenter({
   question,
   index,
   total,
@@ -33,7 +33,7 @@ export function LabTestViewPresenter({
   onAnswer,
   onSpeak,
   onRestart,
-}: LabTestViewPresenterProps) {
+}: TestViewPresenterProps) {
   const [value, setValue] = useState("");
   const [judged, setJudged] = useState<boolean | null>(null);
   const [revealed, setRevealed] = useState(false);
@@ -77,7 +77,7 @@ export function LabTestViewPresenter({
           >
             もう一度テスト
           </button>
-          <Link className="button button--ghost" to="/lab/practice">
+          <Link className="button button--ghost" to="/practice">
             練習にもどる
           </Link>
           <Link className="button button--ghost" to="/">
@@ -128,7 +128,7 @@ export function LabTestViewPresenter({
           <div className="pcard__body">
             <p className="pcard__prompt">{drill.prompt}</p>
             {typed && question.gloss && (
-              <p className="labcard__gloss">{question.gloss}</p>
+              <p className="scard__gloss">{question.gloss}</p>
             )}
 
             {typed ? (
@@ -205,7 +205,7 @@ export function LabTestViewPresenter({
                 </button>
                 {/* Speaking cannot be graded, so the learner reports it — and
                     a swipe is quicker than aiming at a button. */}
-                <p className="lab__swipehint">
+                <p className="session__swipehint">
                   右にスワイプ = 言えた / 左 = まだ
                 </p>
                 <div className="pcard__judge">

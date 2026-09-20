@@ -1,6 +1,6 @@
 /** Where a session was left off, so closing the tab does not lose the place. */
 
-export type LabProgress = {
+export type SessionProgress = {
   stepIndex: number;
   cardIndex: number;
   /** Set once every step has been worked through. */
@@ -9,7 +9,7 @@ export type LabProgress = {
   day: string;
 };
 
-const STORAGE_KEY = "yuru-eigo:lab-progress";
+const STORAGE_KEY = "yuru-eigo:session-progress";
 
 /** Local calendar day — the session resets with the learner's own date. */
 export function today(now = new Date()): string {
@@ -19,12 +19,12 @@ export function today(now = new Date()): string {
   return `${year}-${month}-${date}`;
 }
 
-export function loadProgress(day = today()): LabProgress | null {
+export function loadProgress(day = today()): SessionProgress | null {
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
 
-    const parsed = JSON.parse(raw) as Partial<LabProgress>;
+    const parsed = JSON.parse(raw) as Partial<SessionProgress>;
     if (
       typeof parsed.stepIndex !== "number" ||
       typeof parsed.cardIndex !== "number" ||

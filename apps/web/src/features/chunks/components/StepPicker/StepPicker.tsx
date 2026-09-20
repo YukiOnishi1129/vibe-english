@@ -1,4 +1,4 @@
-import type { StepStatus } from "@/features/lab/hooks/useLabSession";
+import type { StepStatus } from "@/features/chunks/hooks/usePracticeSession";
 
 // Presentational: the four steps, with where the session has reached.
 

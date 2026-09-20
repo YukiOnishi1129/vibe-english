@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import type { ChunkDrill } from "@vibe-english/domain";
-import { joinPieces, shufflePieces } from "@/features/lab/utils/build";
+import { joinPieces, shufflePieces } from "@/features/chunks/utils/build";
 
 // Presentational: assemble the sentence from word groups.
 //
@@ -49,7 +49,7 @@ export function BuildDrill({
 
   return (
     <div className="pcard__body">
-      <p className="labcard__task">並べて文を作ろう</p>
+      <p className="scard__task">並べて文を作ろう</p>
       {gloss && <p className="pcard__prompt">{gloss}</p>}
 
       {/* What has been built so far. */}
@@ -105,7 +105,7 @@ export function BuildDrill({
           <p className={result ? "answerbox__ok" : "answerbox__ng"}>
             {result ? "正解！ 🎉" : `おしい。${drill.answer}`}
           </p>
-          <div className="labcard__actions">
+          <div className="scard__actions">
             <button
               type="button"
               className="button button--ghost pcard__listen"

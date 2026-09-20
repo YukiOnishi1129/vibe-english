@@ -4,7 +4,7 @@ import {
   clearProgress,
   loadProgress,
   saveProgress,
-} from "@/features/lab/utils/progress";
+} from "@/features/chunks/utils/progress";
 
 /**
  * An alternative lesson shape, kept side by side with the current one so the
@@ -15,19 +15,19 @@ import {
  * across all five phrases. Repeating the same kind of task five times in a row
  * is easier to settle into than switching mode on every card.
  */
-export type LabStepKind = "meaning" | "speak" | "blank" | "build" | "translate";
+export type SessionStepKind = "meaning" | "speak" | "blank" | "build" | "translate";
 
-export type LabCard = {
-  kind: LabStepKind;
+export type SessionCard = {
+  kind: SessionStepKind;
   chunk: Chunk;
   drill: ChunkDrill | null;
 };
 
-export type LabStep = {
-  kind: LabStepKind;
+export type SessionStep = {
+  kind: SessionStepKind;
   title: string;
   hint: string;
-  cards: LabCard[];
+  cards: SessionCard[];
 };
 
 export type StepStatus = {
@@ -38,7 +38,7 @@ export type StepStatus = {
   current: boolean;
 };
 
-const STEP_META: { kind: LabStepKind; title: string; hint: string }[] = [
+const STEP_META: { kind: SessionStepKind; title: string; hint: string }[] = [
   { kind: "meaning", title: "意味", hint: "どんな意味か見てみよう" },
   { kind: "speak", title: "発音", hint: "聞いて、まねして言ってみよう" },
   { kind: "blank", title: "穴埋め", hint: "空欄に入る語は？" },
@@ -52,7 +52,7 @@ function drillOf(chunk: Chunk, type: ChunkDrill["type"]): ChunkDrill | null {
   return chunk.drills.find((drill) => drill.type === type) ?? null;
 }
 
-export function buildSteps(chunks: Chunk[]): LabStep[] {
+export function buildSteps(chunks: Chunk[]): SessionStep[] {
   return STEP_META.map((meta) => ({
     ...meta,
     cards: chunks
@@ -77,7 +77,7 @@ export function buildSteps(chunks: Chunk[]): LabStep[] {
   })).filter((step) => step.cards.length > 0);
 }
 
-export function useLabSession(chunks: Chunk[]) {
+export function usePracticeSession(chunks: Chunk[]) {
   const steps = useMemo(() => buildSteps(chunks), [chunks]);
 
   // Resume where the session was left off, but only within the same day:

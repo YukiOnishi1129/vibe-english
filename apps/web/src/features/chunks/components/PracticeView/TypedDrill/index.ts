@@ -1,1 +1,0 @@
-export { TypedDrill } from "./TypedDrill";

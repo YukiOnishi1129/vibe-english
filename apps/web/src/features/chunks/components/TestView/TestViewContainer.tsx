@@ -9,9 +9,9 @@ import {
   useWrapUpQuiz,
   type QuizResult,
 } from "@/features/chunks/hooks/useWrapUpQuiz";
-import { LabTestViewPresenter } from "./LabTestViewPresenter";
+import { TestViewPresenter } from "./TestViewPresenter";
 
-export function LabTestViewContainer() {
+export function TestViewContainer() {
   const { data: session, isPending } = useDailySession();
   const { speak } = useSpeech();
   const recordMisses = useRecordQuizMisses();
@@ -40,7 +40,7 @@ export function LabTestViewContainer() {
   const { state, handlers } = useSwipe(onSwipe);
 
   return (
-    <LabTestViewPresenter
+    <TestViewPresenter
       question={quiz.question}
       index={quiz.index}
       total={quiz.total}

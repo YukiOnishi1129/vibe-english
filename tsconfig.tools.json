@@ -13,7 +13,8 @@
     "scripts",
     "tests",
     "apps/web/vite.config.ts",
-    "apps/web/src/features/chunks/utils/**/*.ts",
+    "apps/web/src/features/chunks/utils/answer.ts",
+    "apps/web/src/features/chunks/utils/shuffle.ts",
     "apps/web/src/shared/utils/**/*.ts"
   ],
   "references": [

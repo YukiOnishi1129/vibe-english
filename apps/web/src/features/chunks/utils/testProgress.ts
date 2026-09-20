@@ -10,7 +10,7 @@ export type TestProgress = {
   day: string;
 };
 
-const STORAGE_KEY = "yuru-eigo:lab-test-progress";
+const STORAGE_KEY = "yuru-eigo:test-progress";
 
 /** Local calendar day — the session resets with the learner's own date. */
 export function today(now = new Date()): string {

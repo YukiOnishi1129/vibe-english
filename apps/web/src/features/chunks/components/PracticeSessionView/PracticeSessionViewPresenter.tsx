@@ -1,17 +1,17 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import type {
-  LabCard as Card,
-  LabStep,
+  SessionCard as Card,
+  SessionStep,
   StepStatus,
-} from "@/features/lab/hooks/useLabSession";
-import { LabCard } from "@/features/lab/components/LabCard";
-import { StepPicker } from "@/features/lab/components/StepPicker";
+} from "@/features/chunks/hooks/usePracticeSession";
+import { SessionCard } from "@/features/chunks/components/SessionCard";
+import { StepPicker } from "@/features/chunks/components/StepPicker";
 
 // Presentational only: props in, JSX out.
 
-export type LabViewPresenterProps = {
-  step: LabStep | undefined;
+export type PracticeSessionViewPresenterProps = {
+  step: SessionStep | undefined;
   stepStatuses: StepStatus[];
   card: Card | undefined;
   stepIndex: number;
@@ -25,7 +25,7 @@ export type LabViewPresenterProps = {
   onSelectStep: (index: number) => void;
 };
 
-export function LabViewPresenter({
+export function PracticeSessionViewPresenter({
   step,
   stepStatuses,
   card,
@@ -38,7 +38,7 @@ export function LabViewPresenter({
   onNext,
   onBack,
   onSelectStep,
-}: LabViewPresenterProps) {
+}: PracticeSessionViewPresenterProps) {
   // Questions have to be attempted before moving on; the other steps are
   // just shown, so they unlock immediately.
   const [answered, setAnswered] = useState(true);
@@ -68,7 +68,7 @@ export function LabViewPresenter({
           </p>
           <p className="done">練習おわり！</p>
           <p className="muted">つづけてテストで確認してみよう。</p>
-          <Link className="button button--primary" to="/lab/test">
+          <Link className="button button--primary" to="/test">
             テストへ
           </Link>
           <Link className="button button--ghost" to="/">
@@ -90,7 +90,7 @@ export function LabViewPresenter({
         <p className="practice__counter">
           {step.title} {cardIndex + 1}/{step.cards.length}
         </p>
-        <span className="lab__steps">
+        <span className="session__steps">
           {stepIndex + 1}/{totalSteps}
         </span>
       </header>
@@ -106,7 +106,7 @@ export function LabViewPresenter({
         <div className="pcard">
           <div key={`${step.kind}:${cardIndex}`} className="pcard__slide">
             <p className="pcard__title">{step.title}</p>
-            <LabCard
+            <SessionCard
               card={card}
               onSpeak={onSpeak}
               onAnsweredChange={handleAnsweredChange}
